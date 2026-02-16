@@ -1,5 +1,8 @@
+<script>  
+
+</script>
+
 <template>
-  <div>
-    <NuxtPage />
-  </div>
+  <h3>Welcome to NHS Wayfinder</h3>
+  <NuxtPage />
 </template>
