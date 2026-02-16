@@ -10,9 +10,9 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event) || {}
   // accept common password field names (case-insensitive)
   const { username } = body
-  const password = body.password ?? body.Password ?? body.password_hash ?? body.Password_hash
+  const password_hash = body.password ?? body.Password ?? body.password_hash ?? body.Password_hash
 
-  if (!username || !password) {
+  if (!username || !password_hash) {
     throw createError({ statusCode: 400, statusMessage: 'username and password are required' })
   }
 
