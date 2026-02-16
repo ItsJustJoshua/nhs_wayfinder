@@ -35,6 +35,11 @@ async function submit() {
     <div v-if="columnsPending">Loading form…</div>
     <div v-else>
       <form @submit.prevent="submit">
+
+        <div>
+            <p>Note: Only username and password are required. Other fields will be ignored.</p>
+        </div>
+        
         <div v-for="col in columns" :key="col.name">
           <label :for="col.name">{{ col.name }}</label>
           <input
