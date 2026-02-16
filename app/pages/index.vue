@@ -6,6 +6,7 @@
       <NuxtLink to="/show-users">View Users</NuxtLink>
       <NuxtLink to="/list-routes">View Routes</NuxtLink>
       <NuxtLink to="/add-user">Add User</NuxtLink>
+      <NuxtLink to="/admin/admin-pages">Admin Pages</NuxtLink>
     </p>
   </div>
 </template>
