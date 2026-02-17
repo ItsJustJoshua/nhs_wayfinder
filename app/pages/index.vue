@@ -13,7 +13,7 @@ export default {
 <template>
   <Header/>
   <div>
-    <h1>Welcome to NHS Wayfinder</h1>
+    <h1>Welcome to Wayfinder</h1>
     <p>
       <NuxtLink to="/show-users">View Users</NuxtLink>
       <NuxtLink to="/list-routes">View Routes</NuxtLink>
