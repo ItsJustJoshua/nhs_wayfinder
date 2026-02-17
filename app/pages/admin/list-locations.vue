@@ -2,7 +2,7 @@
 
 const { data: locations, pending, error } = await useFetch('/api/node')
 
-console.log('Locations data:', locations.value)
+
 
 </script>
 
