@@ -2,11 +2,14 @@
     <header class="header">
         <div id="Topbar">
             <div class="logo">
+<<<<<<< HEAD
                 <h1>PATHFINDER</h1>
+=======
+              <img src="/resources/nhs_logo.jpg" alt="NHS Wayfinder Logo">
+>>>>>>> 2c6cb20aa01c4733b62982378f15b0b8ef14fb3e
             </div>
             <div class="account">
                 <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
-
             </div>
         </div>    
         <nav class="navbar">
@@ -34,10 +37,10 @@
 import '../public/css/header.css';
 
 export default {
-  name: 'AppHeader', // Multi-word name
+  name: 'AppHeader',
   data() {
     return {
-      isDropdownOpen: false // Reactive state for the dropdown
+      isDropdownOpen: false
     };
   },
   methods: {
