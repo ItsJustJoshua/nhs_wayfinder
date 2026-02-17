@@ -7,6 +7,7 @@ export default {
     Header,
   },
 };
+
 </script>
 
 <template>
@@ -27,7 +28,7 @@ export default {
     <NuxtLink to="/admin/list-locations">List Locations</NuxtLink>
     <NuxtLink to="/admin/list-media">List Media</NuxtLink>
     <NuxtLink to="/admin/list-routesadmin">List routesadmin</NuxtLink>
-    <NuxtLink to="/admin/qr-code">List Users</NuxtLink>
+    <NuxtLink to="/admin/qr-code">QR code</NuxtLink>
     <NuxtLink to="/admin/review-media">Review Media</NuxtLink>
     <NuxtLink to="/admin/bfs-debug">Bfs Debug</NuxtLink>
   </div>
