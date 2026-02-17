@@ -5,7 +5,8 @@
                 <h1>NHS</h1>
             </div>
             <div class="account">
-                <NuxtLink to="/login">Login</NuxtLink>
+                <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
+
             </div>
         </div>    
         <nav class="navbar">
