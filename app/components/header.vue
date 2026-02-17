@@ -2,7 +2,8 @@
     <header class="header">
         <div id="Topbar">
             <div class="logo">
-                <img src="/resources/nhs_logo.jpg" alt="NHS Wayfinder Logo">
+              <img src="/resources/nhs_logo.jpg" alt="NHS Wayfinder Logo">
+              <h1>PATHFINDER</h1>
             </div>
             <div class="account">
                 <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
