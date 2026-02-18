@@ -120,6 +120,13 @@ const submitAssign = async () => {
 
 const { data: media1, pending, error } = await useFetch('/api/media')
 const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0]) : []))
+
+function displayMediaUrl(val) {
+  if (!val) return ''
+  const s = String(val)
+  const filename = s.split('/').pop() || s
+  return filename.replace(/\.[^.]+$/, '')
+}
 </script>
 
 <template>
@@ -241,7 +248,9 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
         </thead>
         <tbody>
           <tr v-for="(mediaItem, idx) in media" :key="idx">
-            <td v-for="col in columns" :key="col"><a :href="mediaItem[col]">{{ mediaItem[col] }}</a></td>
+            <td v-for="col in columns" :key="col">
+              <a :href="mediaItem[col]">{{ col === 'media_url' ? displayMediaUrl(mediaItem[col]) : mediaItem[col] }}</a>
+            </td>
             <img v-if="mediaItem" :src="mediaItem.media_url" alt="Media Image"/>
           </tr>
         </tbody>
