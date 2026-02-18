@@ -46,9 +46,5 @@ console.log('Current user:', user.value)
 </script>
 
 <template>
-          <NuxtLink v-if="user" to="#" @click.prevent="handleLogout">
-            Logout
-          </NuxtLink>
-  
   <NuxtPage />
 </template>

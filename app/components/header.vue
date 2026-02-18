@@ -7,7 +7,9 @@
             </div>
             <div class="account">
                 <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
-                <span v-else class="account-user">Hi {{ user.username }}</span>
+                <NuxtLink v-else to="#" @click.prevent="handleLogout">
+                    Logout
+                </NuxtLink>
             </div>
         </div>    
         <nav class="navbar">
@@ -54,5 +56,24 @@ const logout = async () => {
     }
     // reload to update auth state
     window.location.href = '/'
+}
+
+async function handleLogout() {
+  try {
+    await logout();
+  } catch (_) {}
+
+
+  logoutMessage.value = user.value
+    ? `Goodbye ${user.value.username}! You have been logged out.`
+    : "Logout successful.";
+  showLogoutSuccess.value = true;
+
+  setTimeout(() => {
+    showLogoutSuccess.value = false;
+    try {
+      router.push("/");
+    } catch (_) {}
+  }, 2000);
 }
 </script>
