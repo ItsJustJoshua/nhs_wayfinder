@@ -95,6 +95,9 @@ const submitAssign = async () => {
     assignLoading.value = false
   }
 }
+
+const { data: media1, pending, error } = await useFetch('/api/media')
+const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0]) : []))
 </script>
 
 <template>
@@ -184,5 +187,27 @@ const submitAssign = async () => {
         <p v-if="assignMessage">{{ assignMessage }}</p>
       </div>
     </section>
+  </div>
+
+  <div>
+    <h1>media</h1>
+    <div v-if="error">Error loading media.</div>
+    <div v-else-if="pending">Loading...</div>
+    <div v-else>
+      <table v-if="media && media.length">
+        <thead>
+          <tr>
+            <th v-for="col in columns" :key="col">{{ col }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(mediaItem, idx) in media" :key="idx">
+            <td v-for="col in columns" :key="col"><a :href="mediaItem[col]">{{ mediaItem[col] }}</a></td>
+            <img v-if="mediaItem" :src="mediaItem.media_url" alt="Media Image"/>
+          </tr>
+        </tbody>
+      </table>
+      <div v-else>No media found.</div>
+    </div>
   </div>
 </template>
