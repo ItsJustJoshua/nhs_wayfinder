@@ -35,6 +35,19 @@ export default {
         <p>Enter your destination</p>
       </div>
       <input type="text" placeholder="Enter your destination">
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox"> No Stairs
+        </label>
+
+        <label>
+          <input type="checkbox"> No Elevators
+        </label>
+
+        <label>
+          <input type="checkbox"> Wheelchair Accessible
+        </label>
+      </div>
       <a href="#" class="button">Start Pathway</a>
     </div>
   </div>

@@ -3,6 +3,7 @@
         <div id="Topbar">
             <div class="logo">
               <img src="/resources/nhs_logo.jpg" alt="NHS Wayfinder Logo">
+                            <p class="logo-text">Northern General Hospital</p>
             </div>
             <div class="account">
                 <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
@@ -12,7 +13,7 @@
         <nav class="navbar">
             <ul>
                 <li id="link1"><a href="index">Home</a></li>
-                <li id="link2"><a href="#services">Services</a></li>
+                <li id="link2"><a href="#FindLocation">Find Location</a></li>
                 <li id="link3"><a href="#about">About</a></li>
                 <li id="link4"><a href="#contact">Contact</a></li>
                 <li id="Morebtn" @click.prevent="toggleDropdown"><a>More</a></li>

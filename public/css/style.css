@@ -103,6 +103,7 @@ input:focus {
 .background-image {
     position: relative;
     z-index: 0;
+    isolation: isolate;
     min-height: 60vh;
     display: flex;
     justify-content: center;
@@ -125,6 +126,12 @@ input:focus {
     background-position: center;
     background-repeat: no-repeat;
     z-index: -1;
+    pointer-events: none;
+}
+
+.background-image > * {
+    position: relative;
+    z-index: 1;
 }
 
 .box-container{
@@ -184,6 +191,31 @@ input:focus {
     box-sizing: border-box;
 }
 
+.box-container-center input[type="checkbox"] {
+    width: auto;
+    max-width: none;
+    height: auto;
+    margin: 0;
+}
+
+.checkbox-group {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #ffffff;
+}
+
 .box-container-center .button {
     width: 100%;
     max-width: 420px;
@@ -202,6 +234,30 @@ input:focus {
 .box-container-center .button:hover {
     background-color: #006b36;
 }
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.custom-checkbox input {
+  display: none;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #555;
+  border-radius: 4px;
+  position: relative;
+}
+
+.custom-checkbox input:checked + .checkmark {
+  background-color: #4CAF50;
+}
+
 
 .container {
     background-color: #005EB8;
