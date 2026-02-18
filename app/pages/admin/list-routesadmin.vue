@@ -1,6 +1,18 @@
 <script setup>
 
 const { data: connections, pending, error } = await useFetch('/api/connection')
+const { data: nodes, pending: nodesPending, error: nodesError } = await useFetch('/api/node')
+
+import { computed } from 'vue'
+
+const nodesMap = computed(() => {
+    const map = {}
+    const list = (nodes && nodes.value) || []
+    for (const n of list) {
+        map[n.node_id] = n.node_name || n.name || String(n.node_id)
+    }
+    return map
+})
 
 console.log('connections data:', connections.value)
 
@@ -16,7 +28,7 @@ console.log('connections data:', connections.value)
             <ul v-if="connections">
             <li v-for="c in connections" :key="`${c.node_1}-${c.node_2}`">
             <div>
-                <strong>{{ c.node_1 }} → {{ c.node_2 }}</strong>
+                <strong>{{ nodesMap[c.node_1] || c.node_1 }} → {{ nodesMap[c.node_2] || c.node_2 }}</strong>
                 <span v-if="c.wheelchair_accessible"> • wheelchair accessible</span>
                 <span v-if="c.uses_lift"> • lift</span>
                 <span v-if="c.uses_stairs"> • stairs</span>
