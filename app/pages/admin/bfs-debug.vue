@@ -40,7 +40,7 @@
 
 <script>
 import { bfsShortestPath } from "@/../util/bfs";
-import { graph } from "@/../util/graph";
+import { createGraph } from "@/../util/graph";
 
 export default {
   data() {
@@ -56,7 +56,7 @@ export default {
 
   computed: {
     formattedGraph() {
-      return JSON.stringify(this.graph, null, 2);
+      return JSON.stringify(createGraph(), null, 2);
     },
   },
 
