@@ -20,6 +20,16 @@
       <label>Wheelchair User</label>
     </div>
 
+    <div style="margin-top: 10px">
+      <input type="checkbox" v-model="usesStairs" />
+      <label>Use Stairs</label>
+    </div>
+
+    <div style="margin-top: 10px">
+      <input type="checkbox" v-model="usesLift" />
+      <label>Use Lift</label>
+    </div>
+
     <button style="margin-top: 10px" @click="runBFS">Find Shortest Path</button>
 
     <div v-if="shortestPath" style="margin-top: 20px">
@@ -47,6 +57,8 @@ export default {
       startNode: "",
       targetNode: "",
       wheelchairMode: false,
+      usesStairs: true,
+      usesLift: true,
       shortestPath: null,
       searched: false,
     };
@@ -65,6 +77,8 @@ export default {
         this.startNode.trim().toLocaleUpperCase(),
         this.targetNode.trim().toLocaleUpperCase(),
         this.wheelchairMode,
+        this.usesLift,
+        this.usesStairs,
       );
 
       this.searched = true;
