@@ -33,7 +33,6 @@ console.log('connections data:', connections.value)
                 <span v-if="c.uses_lift"> • lift</span>
                 <span v-if="c.uses_stairs"> • stairs</span>
             </div>
-
             <div v-if="c.media && c.media.length">
                 <h5>Connected media</h5>
                     <ul>
