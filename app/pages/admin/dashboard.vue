@@ -51,7 +51,7 @@ async function handleLogout() {
                     <li><NuxtLink to="/admin/create-routemap">Create Route Map</NuxtLink></li>
                     <li><NuxtLink to="/admin/edit-routemap">Edit Route Map</NuxtLink></li>
                     <li><NuxtLink to="/admin/list-locations">List Locations</NuxtLink></li>
-                    <li><NuxtLink to="/admin/media">List Media</NuxtLink></li>
+                    <li><NuxtLink to="/admin/media">Media</NuxtLink></li>
                     <li><NuxtLink to="/admin/list-routesadmin">List Routes</NuxtLink></li>
                     <li><NuxtLink to="/admin/qr-code">QR Code</NuxtLink></li>
                     <li><NuxtLink to="/admin/review-media">Review Media</NuxtLink></li>

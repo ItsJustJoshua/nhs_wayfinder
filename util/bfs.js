@@ -11,8 +11,13 @@ export const graph = {
  * @param {Object} graph
  * @param {String} start
  * @param {String} target
- * @param {Boolean} wheelchairMode
+ * @param {Boolean} wheelchairMode,
+ * @param {Boolean} usesLift,
+ * @param {Boolean} usesStairs,
  */
+
+
+// Main function.
 export function bfsShortestPath(graph, start, target, wheelchairMode) {
   if (!graph[start] || !graph[target]) return null;
 
