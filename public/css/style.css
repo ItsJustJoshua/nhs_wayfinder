@@ -1,3 +1,7 @@
+.admin-links a {
+    padding-right: 10px;
+}
+
 .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
@@ -145,6 +149,7 @@ input:focus {
     padding: 22px 26px;
     margin-top: 50px;
     margin-bottom: 50px;
+    border-radius: 7px;
 }
 
 .box-container-center {
@@ -158,6 +163,7 @@ input:focus {
     justify-content: center;
     padding: 22px 26px;
     box-sizing: border-box;
+    border-radius: 7px;
 }
 
 .location-text {
@@ -278,20 +284,85 @@ input:focus {
     margin: 0;
     font-style: italic;
 }
-@media only screen and (max-width: 600px) {
 
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+.app-main {
+  flex: 1;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    background-color: #cccccc;
+    border-top: #005EB8 solid 4px;
+    color: rgb(66, 66, 66);
+    font-size: 18px;
     margin: 0;
+    padding: 0 20% 50px 20%;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+footer ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: auto 0;
     padding: 0;
 }
 
-.container {
-    background-color: #005EB8;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+footer ul li a {
+    text-decoration: underline;
+    color: #003d75;
+    font-weight: bold;
 }
+
+footer ul li a:hover {
+    text-decoration: none;
+}
+
+footer ul li a:active{
+    text-decoration: none;
+    color: #ffee00;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 600px) {
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        background-color: #005EB8;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+     footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin: 50px 0 0 0;
+        padding: 20px 10%;
+        position: relative;
+    }
+
+    footer ul {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+}
+
+

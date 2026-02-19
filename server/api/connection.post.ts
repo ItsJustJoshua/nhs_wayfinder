@@ -3,15 +3,14 @@ import pool from '~~/api/database'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { node_1, node_2, uses_lift = false, uses_stairs = false, wheelchair_accessible = false } = body
-
+    const { node_1, node_2, is_wheelchair_inaccessible = false } = body
     if (typeof node_1 !== 'number' || typeof node_2 !== 'number') {
       throw createError({ statusCode: 400, statusMessage: 'node_1 and node_2 must be numeric IDs' })
     }
 
     await pool.execute(
-      'INSERT INTO navigation_system.connections (node_1, node_2, uses_lift, uses_stairs, wheelchair_accessible) VALUES (?, ?, ?, ?, ?)',
-      [node_1, node_2, uses_lift ? 1 : 0, uses_stairs ? 1 : 0, wheelchair_accessible ? 1 : 0]
+      'INSERT INTO navigation_system.connections (node_1, node_2, is_wheelchair_inaccessible) VALUES (?, ?, ?)',
+      [node_1, node_2, is_wheelchair_inaccessible ? 1 : 0]
     )
 
     return { success: true }

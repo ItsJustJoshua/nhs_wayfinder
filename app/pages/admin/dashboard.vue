@@ -47,15 +47,13 @@ async function handleLogout() {
         <div>
             <div class="admin-nav">
                 <ul>
-                    <li><NuxtLink to="/admin/create-route">Create Route</NuxtLink></li>
-                    <li><NuxtLink to="/admin/create-routemap">Create Route Map</NuxtLink></li>
-                    <li><NuxtLink to="/admin/edit-routemap">Edit Route Map</NuxtLink></li>
-                    <li><NuxtLink to="/admin/list-locations">List Locations</NuxtLink></li>
                     <li><NuxtLink to="/admin/media">Media</NuxtLink></li>
-                    <li><NuxtLink to="/admin/list-routesadmin">List Routes</NuxtLink></li>
-                    <li><NuxtLink to="/admin/qr-code">QR Code</NuxtLink></li>
-                    <li><NuxtLink to="/admin/review-media">Review Media</NuxtLink></li>
                     <li><NuxtLink to="/admin/bfs-debug">BFS Debug</NuxtLink></li>
+                    <li><NuxtLink to="/admin/dashboard">Dashboard</NuxtLink></li>
+                    <li><NuxtLink to="/admin/review-media">Review Media</NuxtLink></li>
+                    <li><NuxtLink to="/admin/node">Add Node</NuxtLink></li>
+                    <li><NuxtLink to="/admin/connections">Connections</NuxtLink></li>
+                    <li><NuxtLink to="/admin/users"> Users</NuxtLink></li>
                 </ul>
             </div>
         </div>

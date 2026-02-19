@@ -8,6 +8,7 @@
     z-index: 30;
 }
 
+
 #Topbar{
     display: flex;
     align-items: center;
@@ -83,7 +84,7 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #000;
+    color: #fff;
     font-size: 20px;
     font-weight: bolder;
     text-decoration: none;

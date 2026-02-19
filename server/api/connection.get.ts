@@ -4,7 +4,7 @@ export default defineEventHandler(async () => {
   try {
     // Join connections with connection_media and media_resource to get all media for each connection in one query
     const [rows] = await pool.query(
-      `SELECT c.node_1, c.node_2, c.uses_lift, c.uses_stairs, c.wheelchair_accessible,
+      `SELECT c.node_1, c.node_2, c.is_wheelchair_inaccessible,
               cm.media_id, mr.media_type, mr.media_url, cm.order_num
        FROM navigation_system.connections c
        LEFT JOIN navigation_system.connection_media cm
@@ -13,7 +13,7 @@ export default defineEventHandler(async () => {
          ON mr.media_id = cm.media_id
        ORDER BY c.node_1, c.node_2, cm.order_num ASC`
     )
-
+ 
     // rows may contain multiple rows per connection (one per media). Group them.
     const map = new Map()
     for (const r of rows as any[]) {
@@ -22,9 +22,7 @@ export default defineEventHandler(async () => {
         map.set(key, {
           node_1: r.node_1,
           node_2: r.node_2,
-          uses_lift: r.uses_lift,
-          uses_stairs: r.uses_stairs,
-          wheelchair_accessible: r.wheelchair_accessible,
+          is_wheelchair_inaccessible: !!r.is_wheelchair_inaccessible,
           media: []
         })
       }
