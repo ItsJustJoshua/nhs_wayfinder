@@ -59,6 +59,7 @@ import { user } from "~~/server/api/use-auth";
     <NuxtLink to="/admin/review-media">Review Media</NuxtLink>
     <NuxtLink to="/admin/bfs-debug">BFS Debug</NuxtLink>
     <NuxtLink to="/admin/node">Add Node</NuxtLink>
+    <NuxtLink to="/admin/connections">Connections</NuxtLink>
 
   </div>
 </template>
