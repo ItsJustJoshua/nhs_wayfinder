@@ -1,21 +1,15 @@
 <script setup>
 
+
+import useMediaChecks from '../../../composables/useMediaChecks'
+const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
+
 const { data: connections, pending, error } = await useFetch('/api/connection')
 const { data: nodes, pending: nodesPending, error: nodesError } = await useFetch('/api/node')
 
+
 import { computed } from 'vue'
 
-const isImage = (t) => {
-    if (t == null) return false
-    const s = String(t).toLowerCase()
-    return s.startsWith('image') || s === '2' || s === 'image/png' || s === 'image/jpg' || s === 'image/jpeg'
-}
-
-const isVideo = (t) => {
-    if (t == null) return false
-    const s = String(t).toLowerCase()
-    return s.startsWith('video') || s === '1' || s === 'video/mp4'
-}
 
 const nodesMap = computed(() => {
     const map = {}
@@ -52,12 +46,12 @@ console.log('connections data:', connections.value)
                     <ul>
                     <li v-for="m in c.media" :key="m.media_id + '-' + m.order_num">
                     <div>
-                        <span v-if="isImage(m.media_type)">
+                        <span v-if="isImageType(m)">
                             <img :src="m.media_url" alt="media" style="max-width:120px; max-height:80px" />
                         </span>
-                        <span v-else-if="isVideo(m.media_type)">
-                            <video :src="m.media_url" controls style="max-width:160px; max-height:90px"></video>
-                        </span>
+                    <div v-else-if="isVideoType(m)">
+                        <video :src="m.media_url" controls style="max-width:300px; max-height:200px"></video>
+                    </div>
                         <span v-else>
                             <a :href="m.media_url" target="_blank">Open media {{ m.media_id }}</a>
                         </span>

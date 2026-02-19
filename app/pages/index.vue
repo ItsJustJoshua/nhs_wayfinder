@@ -61,13 +61,11 @@ export default {
   </div>
 
   <div>
-    <NuxtLink to="/admin/list-locations">List Locations</NuxtLink>
     <NuxtLink to="/admin/media">Media</NuxtLink>
     <NuxtLink to="/admin/list-routesadmin">List routesadmin</NuxtLink>
-    <NuxtLink to="/admin/qr-code">QR code</NuxtLink>
     <NuxtLink to="/admin/review-media">Review Media</NuxtLink>
     <NuxtLink to="/admin/bfs-debug">BFS Debug</NuxtLink>
-    <NuxtLink to="/admin/add-node">Add Node</NuxtLink>
-    <NuxtLink to="/admin/assign-media">Assign Media</NuxtLink>
+    <NuxtLink to="/admin/node">Add Node</NuxtLink>
+
   </div>
 </template>

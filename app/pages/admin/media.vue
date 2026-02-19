@@ -1,5 +1,6 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
+import useMediaChecks from '../../../composables/useMediaChecks'
 
 const uploadForm = reactive({ media: '' })
 const useFile = ref(false)
@@ -121,28 +122,7 @@ const submitAssign = async () => {
 const { data: media1, pending, error } = await useFetch('/api/media')
 const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0]) : []))
 
-function displayMediaUrl(val) {
-  if (!val) return ''
-  const s = String(val)
-  const filename = s.split('/').pop() || s
-  return filename.replace(/\.[^.]+$/, '')
-}
-
-function isImageType(m) {
-  if (!m) return false
-  const t = String(m.media_type || '').toLowerCase()
-  if (t.includes('image')) return true
-  if (['2', 'image', 'img'].includes(t)) return true
-  return /\.(png|jpe?g|gif|bmp|svg)$/i.test(String(m.media_url || ''))
-}
-
-function isVideoType(m) {
-  if (!m) return false
-  const t = String(m.media_type || '').toLowerCase()
-  if (t.includes('video')) return true
-  if (['1', 'video', 'vid'].includes(t)) return true
-  return /\.(mp4|webm|ogg|mov|mkv)$/i.test(String(m.media_url || ''))
-}
+const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
 </script>
 
 <template>
