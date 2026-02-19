@@ -30,9 +30,8 @@ const order_num = ref('')
 const assignMessage = ref('')
 const assignLoading = ref(false)
 
-const uses_lift = ref(false)
-const uses_stairs = ref(false)
-const wheelchair_accessible = ref(false)
+
+const is_wheelchair_inaccessible = ref(false)
 
 const searchNodes = ref('')
 const searchMedia = ref('')
@@ -116,9 +115,7 @@ const submitAssign = async () => {
       body: {
         node_1: Number(connection_node_1.value),
         node_2: Number(connection_node_2.value),
-        uses_lift: !!uses_lift.value,
-        uses_stairs: !!uses_stairs.value,
-        wheelchair_accessible: !!wheelchair_accessible.value
+        is_wheelchair_inaccessible: !!is_wheelchair_inaccessible.value
       }
     }).catch(() => {})
 
@@ -237,9 +234,7 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
         </div>
 
         <div style="margin-top:8px">
-          <label style="display:block"><input type="checkbox" v-model="uses_lift" /> Uses lift</label>
-          <label style="display:block"><input type="checkbox" v-model="uses_stairs" /> Uses stairs</label>
-          <label style="display:block"><input type="checkbox" v-model="wheelchair_accessible" /> Wheelchair accessible</label>
+          <label style="display:block"><input type="checkbox" v-model="is_wheelchair_inaccessible" /> Is wheelchair inaccessible</label>
         </div>
 
         <div>
