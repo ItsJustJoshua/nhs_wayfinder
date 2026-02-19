@@ -59,7 +59,11 @@ console.log('Current user:', user.value)
 
 
 <template>
-  <Header/>
-  <NuxtPage />
-  <Footer/>
+  <div class="app-layout">
+    <Header/>
+    <div class="app-main">
+      <NuxtPage />
+    </div>
+    <Footer/>
+  </div>
 </template>
