@@ -62,7 +62,7 @@ const loginUser = async () => {
 
       <button type="submit">Login</button>
     </form>
-    <div v-if="message">{{ message }}</div>
+    <div class="message" v-if="message">{{ message }}</div>
   </main>
 
   <footer>
