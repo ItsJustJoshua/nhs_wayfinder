@@ -24,7 +24,13 @@
 
     <div v-if="shortestPath" style="margin-top: 20px">
       <strong>Shortest Path:</strong>
-      {{ shortestPath.join(" -> ") }}
+      <span
+        role="button"
+        @click="watchPath"
+        style="cursor:pointer;color:var(--nuxt-link-color,blue);text-decoration:underline"
+      >
+        {{ shortestPath.join(" -> ") }}
+      </span>
     </div>
 
     <div v-else-if="searched" style="color: red">No valid path found.</div>
@@ -87,6 +93,11 @@ export default {
 
       this.searched = true;
     },
+      watchPath() {
+        if (!this.shortestPath || !this.shortestPath.length) return;
+        const path = this.shortestPath.join(",");
+        this.$router.push({ path: "/watch-route", query: { path } });
+      },
   },
 };
 </script>
