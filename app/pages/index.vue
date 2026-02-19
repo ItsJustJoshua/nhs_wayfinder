@@ -17,15 +17,17 @@ import { user } from "~~/server/api/use-auth";
     <div class="box-container-center">
       <div class="location-text">
         <h2>Find your path:</h2>
-        <p>Enter your start location</p>
+        <p>Enter your start location.</p>
       </div>
       <input type="text" placeholder="Enter your current location" />
       <div class="location-text">
-        <p>Enter your destination</p>
+        <p>Enter your destination.</p>
       </div>
       <input type="text" placeholder="Enter your destination" />
       <div class="checkbox-group">
-        <label> <input type="checkbox" /> Wheelchair Accessible </label>
+        <label>
+          <input type="checkbox" /> I'm in a wheelchair / don't use elevators.
+        </label>
       </div>
       <a href="#" class="button">Start Pathway</a>
     </div>
