@@ -16,7 +16,7 @@
     </div>
 
     <div style="margin-top: 10px">
-      <input type="checkbox" v-model="wheelchairMode" />
+      <input type="checkbox" v-model="inaccessible" />
       <label>Wheelchair User</label>
     </div>
 
@@ -29,6 +29,7 @@
 
     <div v-else-if="searched" style="color: red">No valid path found.</div>
   </div>
+
   <div>
     <hr />
     <p>
@@ -45,28 +46,43 @@ import { createGraph } from "@/../util/graph";
 export default {
   data() {
     return {
-      graph: createGraph(),
+      graph: {},
+      nodes: [],
+      connections: [],
       startNode: "",
       targetNode: "",
-      wheelchairMode: false,
+      inaccessible: false,
       shortestPath: null,
       searched: false,
     };
   },
 
+  async mounted() {
+    try {
+      this.nodes = await $fetch("/api/node");
+      this.connections = await $fetch("/api/connection");
+      this.graph = createGraph(this.nodes, this.connections);
+    } catch (e) {
+      this.nodes = [];
+      this.connections = [];
+      this.graph = {};
+    }
+  },
+
   computed: {
     formattedGraph() {
-      return JSON.stringify(createGraph(), null, 2);
+      return JSON.stringify(this.graph, null, 2);
     },
   },
 
   methods: {
     runBFS() {
+      this.graph = createGraph(this.nodes, this.connections);
       this.shortestPath = bfsShortestPath(
         this.graph,
-        this.startNode.trim().toLocaleUpperCase(),
-        this.targetNode.trim().toLocaleUpperCase(),
-        this.wheelchairMode,
+        this.startNode.trim(),
+        this.targetNode.trim(),
+        this.inaccessible,
       );
 
       this.searched = true;
