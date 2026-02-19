@@ -16,7 +16,7 @@
     </div>
 
     <div style="margin-top: 10px">
-      <input type="checkbox" v-model="wheelchairMode" />
+      <input type="checkbox" v-model="inaccessible" />
       <label>Wheelchair User</label>
     </div>
 
@@ -24,11 +24,18 @@
 
     <div v-if="shortestPath" style="margin-top: 20px">
       <strong>Shortest Path:</strong>
-      {{ shortestPath.join(" -> ") }}
+      <span
+        role="button"
+        @click="watchPath"
+        style="cursor:pointer;color:var(--nuxt-link-color,blue);text-decoration:underline"
+      >
+        {{ shortestPath.join(" -> ") }}
+      </span>
     </div>
 
     <div v-else-if="searched" style="color: red">No valid path found.</div>
   </div>
+
   <div>
     <hr />
     <p>
@@ -40,18 +47,32 @@
 
 <script>
 import { bfsShortestPath } from "@/../util/bfs";
-import { graph } from "@/../util/graph";
+import { createGraph } from "@/../util/graph";
 
 export default {
   data() {
     return {
-      graph: createGraph(),
+      graph: {},
+      nodes: [],
+      connections: [],
       startNode: "",
       targetNode: "",
-      wheelchairMode: false,
+      inaccessible: false,
       shortestPath: null,
       searched: false,
     };
+  },
+
+  async mounted() {
+    try {
+      this.nodes = await $fetch("/api/node");
+      this.connections = await $fetch("/api/connection");
+      this.graph = createGraph(this.nodes, this.connections);
+    } catch (e) {
+      this.nodes = [];
+      this.connections = [];
+      this.graph = {};
+    }
   },
 
   computed: {
@@ -62,15 +83,21 @@ export default {
 
   methods: {
     runBFS() {
+      this.graph = createGraph(this.nodes, this.connections);
       this.shortestPath = bfsShortestPath(
         this.graph,
-        this.startNode.trim().toLocaleUpperCase(),
-        this.targetNode.trim().toLocaleUpperCase(),
-        this.wheelchairMode,
+        this.startNode.trim(),
+        this.targetNode.trim(),
+        this.inaccessible,
       );
 
       this.searched = true;
     },
+      watchPath() {
+        if (!this.shortestPath || !this.shortestPath.length) return;
+        const path = this.shortestPath.join(",");
+        this.$router.push({ path: "/watch-route", query: { path } });
+      },
   },
 };
 </script>

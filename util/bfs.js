@@ -1,39 +1,33 @@
-export const graph = {
-  A: { neighbors: ["B", "C"], accessible: true },
-  B: { neighbors: ["D", "E"], accessible: true },
-  C: { neighbors: ["F"], accessible: false },
-  D: { neighbors: [], accessible: true },
-  E: { neighbors: ["F"], accessible: true },
-  F: { neighbors: [], accessible: true },
-};
 
 
 // Main function.
 export function bfsShortestPath(graph, start, target, wheelchairMode) {
-  if (!graph[start] || !graph[target]) return null;
+  const startKey = String(start);
+  const targetKey = String(target);
 
-  const queue = [[start]];
-  const visited = new Set([start]);
+  if (!graph[startKey] || !graph[targetKey]) return null;
+
+  const queue = [[startKey]];
+  const visited = new Set([startKey]);
 
   while (queue.length > 0) {
     const path = queue.shift();
     const currentNode = path[path.length - 1];
 
-    if (currentNode === target) return path;
+    if (currentNode === targetKey) return path;
 
     for (let neighbor of graph[currentNode].neighbors) {
-      const nodeData = graph[neighbor];
-
-      if (wheelchairMode && !nodeData.accessible) {
+      if (wheelchairMode && neighbor.inaccessible) {
         continue;
       }
 
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push([...path, neighbor]);
+      const neighborId = String(neighbor.id);
+
+      if (!visited.has(neighborId)) {
+        visited.add(neighborId);
+        queue.push([...path, neighborId]);
       }
     }
   }
-
   return null;
 }

@@ -1,12 +1,6 @@
 <script>
 import { user } from "~~/server/api/use-auth";
-import Header from "../components/header.vue";
 
-export default {
-  components: {
-    Header,
-  },
-};
 
 
 
@@ -18,7 +12,6 @@ export default {
 </script>
 
 <template>
-    <Header/>
   <div class="background-image">
     <div class="box-container">
       <h1 class="welcome-message">NHS</h1>
@@ -35,26 +28,37 @@ export default {
         <p>Enter your destination</p>
       </div>
       <input type="text" placeholder="Enter your destination">
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox"> No Stairs
+        </label>
+
+        <label>
+          <input type="checkbox"> No Elevators
+        </label>
+
+        <label>
+          <input type="checkbox"> Wheelchair Accessible
+        </label>
+      </div>
       <a href="#" class="button">Start Pathway</a>
     </div>
   </div>
   <div>
     <h1>Welcome to Wayfinder</h1>
     <p>
-      <NuxtLink to="/show-users">View Users</NuxtLink>
-      <NuxtLink to="/add-user">Add User</NuxtLink>
+      <NuxtLink to="admin/users"> Users</NuxtLink>
     </p>
 
   </div>
 
   <div>
-    <NuxtLink to="/admin/list-locations">List Locations</NuxtLink>
-    <NuxtLink to="/admin/list-media">List Media</NuxtLink>
+    <NuxtLink to="/admin/media">Media</NuxtLink>
     <NuxtLink to="/admin/list-routesadmin">List routesadmin</NuxtLink>
-    <NuxtLink to="/admin/qr-code">QR code</NuxtLink>
     <NuxtLink to="/admin/review-media">Review Media</NuxtLink>
     <NuxtLink to="/admin/bfs-debug">BFS Debug</NuxtLink>
-    <NuxtLink to="/admin/add-node">Add Node</NuxtLink>
-    <NuxtLink to="/admin/assign-media">Assign Media</NuxtLink>
+    <NuxtLink to="/admin/node">Add Node</NuxtLink>
+    <NuxtLink to="/admin/connections">Connections</NuxtLink>
+
   </div>
 </template>

@@ -1,7 +1,22 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
+import useMediaChecks from '../../../composables/useMediaChecks'
 
-const uploadForm = reactive({ media: '' })
+
+async function deleteMedia(media_url) {
+  if (!confirm('Delete this media resource?')) return
+  try {
+    await $fetch('/api/media', { method: 'DELETE', body: { media_url } })
+    await refresh()
+  } catch (err) {
+    console.error(err)
+    alert('Failed to delete media resource')
+  }
+}
+
+const uploadForm = reactive({ media: '', file_name: '' })
+const useFile = ref(false)
+const fileInput = ref(null)
 const uploadMessage = ref('')
 const uploadLoading = ref(false)
 
@@ -15,9 +30,8 @@ const order_num = ref('')
 const assignMessage = ref('')
 const assignLoading = ref(false)
 
-const uses_lift = ref(false)
-const uses_stairs = ref(false)
-const wheelchair_accessible = ref(false)
+
+const is_wheelchair_inaccessible = ref(false)
 
 const searchNodes = ref('')
 const searchMedia = ref('')
@@ -43,13 +57,43 @@ const canSubmitAssign = computed(() => {
   return connection_node_1.value && connection_node_2.value && media_id.value && connection_node_1.value !== connection_node_2.value
 })
 
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 const submitUpload = async () => {
   uploadMessage.value = ''
   uploadLoading.value = true
   try {
-    await $fetch('/api/upload', { method: 'POST', body: { media_type: '2', media_url: uploadForm.media } })
+    let mediaUrl = uploadForm.media
+    let mediaType = '2'
+
+    if (useFile.value && fileInput.value && fileInput.value.files && fileInput.value.files[0]) {
+      const file = fileInput.value.files[0]
+      mediaUrl = await readFileAsDataURL(file)
+      if (file.type && file.type.startsWith('video')) mediaType = '1'
+      else mediaType = '2'
+
+      // include user-provided filename if present, otherwise original filename
+      const sendName = (uploadForm.file_name && String(uploadForm.file_name).trim()) ? String(uploadForm.file_name).trim() : file.name
+      await $fetch('/api/upload', { method: 'POST', body: { media_type: mediaType, media_url: mediaUrl, file_name: sendName } })
+      uploadMessage.value = 'Media uploaded successfully.'
+      Object.keys(uploadForm).forEach((k) => { uploadForm[k] = '' })
+      if (fileInput.value) fileInput.value.value = null
+      if (refreshMedia) { await refreshMedia() }
+      uploadLoading.value = false
+      return
+    }
+
+    await $fetch('/api/upload', { method: 'POST', body: { media_type: mediaType, media_url: mediaUrl } })
     uploadMessage.value = 'Media uploaded successfully.'
     Object.keys(uploadForm).forEach((k) => { uploadForm[k] = '' })
+    if (fileInput.value) fileInput.value.value = null
     if (refreshMedia) { await refreshMedia() }
   } catch (e) {
     uploadMessage.value = e?.data?.statusMessage || 'Failed to upload media.'
@@ -66,16 +110,24 @@ const submitAssign = async () => {
 
   assignLoading.value = true
   try {
-    await $fetch('/api/connection', {
-      method: 'POST',
-      body: {
-        node_1: Number(connection_node_1.value),
-        node_2: Number(connection_node_2.value),
-        uses_lift: !!uses_lift.value,
-        uses_stairs: !!uses_stairs.value,
-        wheelchair_accessible: !!wheelchair_accessible.value
+    // create connection (ignore if it already exists), but surface other errors
+    try {
+      await $fetch('/api/connection', {
+        method: 'POST',
+        body: {
+          node_1: Number(connection_node_1.value),
+          node_2: Number(connection_node_2.value),
+          is_wheelchair_inaccessible: !!is_wheelchair_inaccessible.value
+        }
+      })
+    } catch (e) {
+      const code = e?.data?.statusCode || e?.data?.status || null
+      if (code === 409) {
+        // connection already exists — proceed
+      } else {
+        throw e
       }
-    }).catch(() => {})
+    }
 
     await $fetch('/api/connection-media', {
       method: 'POST',
@@ -98,6 +150,8 @@ const submitAssign = async () => {
 
 const { data: media1, pending, error } = await useFetch('/api/media')
 const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0]) : []))
+
+const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
 </script>
 
 <template>
@@ -108,10 +162,31 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
       <h2>Upload media</h2>
       <form @submit.prevent="submitUpload">
         <div>
-          <label for="media">Select media link:</label>
-          <input id="media" name="media" type="url" v-model="uploadForm.media" required />
+          <label>
+            <input type="radio" v-model="useFile" :value="false" /> Use link
+          </label>
+          <label style="margin-left: 12px">
+            <input type="radio" v-model="useFile" :value="true" /> Upload file
+          </label>
         </div>
-        <button type="submit" :disabled="uploadLoading">{{ uploadLoading ? 'Uploading…' : 'Upload' }}</button>
+
+        <div style="margin-top:8px">
+          <div v-if="!useFile">
+            <label for="media">Media link (URL):</label>
+            <input id="media" name="media" type="url" v-model="uploadForm.media" required />
+          </div>
+
+          <div v-else>
+            <label for="file">Choose file:</label>
+            <input id="file" ref="fileInput" type="file" accept="image/*,video/*" />
+            <div style="margin-top:8px">
+              <label for="file_name">Save as (optional):</label>
+              <input id="file_name" name="file_name" type="text" v-model="uploadForm.file_name" placeholder="custom-name.mp4 or leave blank" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" :disabled="uploadLoading" style="margin-top:12px">{{ uploadLoading ? 'Uploading…' : 'Upload' }}</button>
       </form>
       <div v-if="uploadMessage">{{ uploadMessage }}</div>
     </section>
@@ -151,16 +226,16 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
           <label>Media</label>
           <select v-model="media_id">
             <option :value="null">-- select --</option>
-            <option v-for="m in filteredMedia" :key="m.media_id" :value="m.media_id">{{ m.media_type }} — {{ m.media_id }}</option>
+            <option v-for="m in filteredMedia" :key="m.media_id" :value="m.media_id">{{ displayMediaUrl(m.media_url) }} — {{ m.media_id }}</option>
           </select>
         </div>
 
         <div v-if="selectedMediaObj">
           <h4>Preview</h4>
-          <div v-if="selectedMediaObj.media_type && selectedMediaObj.media_type.startsWith('image')">
+          <div v-if="isImageType(selectedMediaObj)">
             <img :src="selectedMediaObj.media_url" alt="preview" style="max-width:300px; max-height:200px" />
           </div>
-          <div v-else-if="selectedMediaObj.media_type && selectedMediaObj.media_type.startsWith('video')">
+          <div v-else-if="isVideoType(selectedMediaObj)">
             <video :src="selectedMediaObj.media_url" controls style="max-width:300px; max-height:200px"></video>
           </div>
           <div v-else>
@@ -169,9 +244,7 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
         </div>
 
         <div style="margin-top:8px">
-          <label style="display:block"><input type="checkbox" v-model="uses_lift" /> Uses lift</label>
-          <label style="display:block"><input type="checkbox" v-model="uses_stairs" /> Uses stairs</label>
-          <label style="display:block"><input type="checkbox" v-model="wheelchair_accessible" /> Wheelchair accessible</label>
+          <label style="display:block"><input type="checkbox" v-model="is_wheelchair_inaccessible" /> Is wheelchair inaccessible</label>
         </div>
 
         <div>
@@ -181,7 +254,7 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
 
         <div>
           <button :disabled="assignLoading || !canSubmitAssign" @click="submitAssign">{{ assignLoading ? 'Saving…' : 'Create connection & assign media' }}</button>
-          <NuxtLink to="/admin/add-node">Add node</NuxtLink>
+          <NuxtLink to="/admin/node">Add node</NuxtLink>
         </div>
 
         <p v-if="assignMessage">{{ assignMessage }}</p>
@@ -194,7 +267,7 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
     <div v-if="error">Error loading media.</div>
     <div v-else-if="pending">Loading...</div>
     <div v-else>
-      <table v-if="media && media.length">
+      <table v-if="media && media.length" class="styled-table">
         <thead>
           <tr>
             <th v-for="col in columns" :key="col">{{ col }}</th>
@@ -202,12 +275,41 @@ const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0
         </thead>
         <tbody>
           <tr v-for="(mediaItem, idx) in media" :key="idx">
-            <td v-for="col in columns" :key="col"><a :href="mediaItem[col]">{{ mediaItem[col] }}</a></td>
-            <img v-if="mediaItem" :src="mediaItem.media_url" alt="Media Image"/>
+            <td v-for="col in columns" :key="col">
+              <a :href="mediaItem[col]">{{ col === 'media_url' ? displayMediaUrl(mediaItem[col]) : mediaItem[col] }}</a>
+            </td>
+            <img v-if="mediaItem && isImageType(mediaItem)" :src="mediaItem.media_url" alt="Media"/>
+            <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls style="max-width:200px; max-height:150px"></video>
           </tr>
         </tbody>
       </table>
       <div v-else>No media found.</div>
     </div>
   </div>
+  <div>
+        <div>
+    <h1>Media Resources</h1>
+    <div v-if="error">Error loading media resources.</div>
+    <div v-else-if="pending">Loading...</div>
+    <div v-else>
+      <table v-if="media && media.length" class="styled-table">
+        <thead>
+          <tr>
+            <th v-for="col in columns" :key="col">{{ col }}</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, idx) in media" :key="idx">
+            <td v-for="col in columns" :key="col">{{ item[col] }}</td>
+            <td>
+              <button @click="deleteMedia(item.media_url)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-else>No media resources found.</div>
+    </div>
+  </div>
+    </div>
 </template>

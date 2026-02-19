@@ -4,7 +4,10 @@
     font-family: 'Source Sans 3', sans-serif;
     font-size: 18px;
     text-decoration: none;
+    position: relative;
+    z-index: 30;
 }
+
 
 #Topbar{
     display: flex;
@@ -20,6 +23,19 @@
 #Topbar img{
     height: 35px;
     width: auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-text {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
 }
 
 .account a{
@@ -81,6 +97,7 @@ nav ul li a:hover {
 
 .dropdown {
     display: none;
+    z-index: 35;
 }
 
 @media (max-width: 760px) {
@@ -93,8 +110,14 @@ nav ul li a:hover {
         display: none;
     }
 
+    .logo-text {
+        font-size: 18px;
+    }
+
     #Morebtn {
         display: block;
+        position: relative;
+        z-index: 40;
     }
 
     nav {
@@ -115,6 +138,7 @@ nav ul li a:hover {
         width: 100%;
         height: auto;
         text-align: left;
+        z-index: 45;
     }
     
     .dropdown ul{
