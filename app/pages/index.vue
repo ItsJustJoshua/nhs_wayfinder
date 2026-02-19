@@ -62,7 +62,7 @@ export default {
 
   <div>
     <NuxtLink to="/admin/list-locations">List Locations</NuxtLink>
-    <NuxtLink to="/admin/list-media">List Media</NuxtLink>
+    <NuxtLink to="/admin/media">Media</NuxtLink>
     <NuxtLink to="/admin/list-routesadmin">List routesadmin</NuxtLink>
     <NuxtLink to="/admin/qr-code">QR code</NuxtLink>
     <NuxtLink to="/admin/review-media">Review Media</NuxtLink>

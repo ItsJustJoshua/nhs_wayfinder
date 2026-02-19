@@ -127,6 +127,22 @@ function displayMediaUrl(val) {
   const filename = s.split('/').pop() || s
   return filename.replace(/\.[^.]+$/, '')
 }
+
+function isImageType(m) {
+  if (!m) return false
+  const t = String(m.media_type || '').toLowerCase()
+  if (t.includes('image')) return true
+  if (['2', 'image', 'img'].includes(t)) return true
+  return /\.(png|jpe?g|gif|bmp|svg)$/i.test(String(m.media_url || ''))
+}
+
+function isVideoType(m) {
+  if (!m) return false
+  const t = String(m.media_type || '').toLowerCase()
+  if (t.includes('video')) return true
+  if (['1', 'video', 'vid'].includes(t)) return true
+  return /\.(mp4|webm|ogg|mov|mkv)$/i.test(String(m.media_url || ''))
+}
 </script>
 
 <template>
@@ -203,10 +219,10 @@ function displayMediaUrl(val) {
 
         <div v-if="selectedMediaObj">
           <h4>Preview</h4>
-          <div v-if="selectedMediaObj.media_type && selectedMediaObj.media_type.startsWith('image')">
+          <div v-if="isImageType(selectedMediaObj)">
             <img :src="selectedMediaObj.media_url" alt="preview" style="max-width:300px; max-height:200px" />
           </div>
-          <div v-else-if="selectedMediaObj.media_type && selectedMediaObj.media_type.startsWith('video')">
+          <div v-else-if="isVideoType(selectedMediaObj)">
             <video :src="selectedMediaObj.media_url" controls style="max-width:300px; max-height:200px"></video>
           </div>
           <div v-else>
@@ -251,7 +267,8 @@ function displayMediaUrl(val) {
             <td v-for="col in columns" :key="col">
               <a :href="mediaItem[col]">{{ col === 'media_url' ? displayMediaUrl(mediaItem[col]) : mediaItem[col] }}</a>
             </td>
-            <img v-if="mediaItem" :src="mediaItem.media_url" alt="Media Image"/>
+            <img v-if="mediaItem && isImageType(mediaItem)" :src="mediaItem.media_url" alt="Media"/>
+            <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls style="max-width:200px; max-height:150px"></video>
           </tr>
         </tbody>
       </table>
