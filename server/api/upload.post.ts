@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
       fs.writeFileSync(outPath, Buffer.from(base64Data, 'base64'))
 
-      // store short relative URL so it fits typical VARCHAR(255)
+      // store short relative URL for database
       media_url = `/media/${fileName}`
     }
 
