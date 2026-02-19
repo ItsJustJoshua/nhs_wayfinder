@@ -1,12 +1,6 @@
 <script>
 import { user } from "~~/server/api/use-auth";
-import Header from "../components/header.vue";
 
-export default {
-  components: {
-    Header,
-  },
-};
 
 
 
@@ -18,7 +12,6 @@ export default {
 </script>
 
 <template>
-    <Header/>
   <div class="background-image">
     <div class="box-container">
       <h1 class="welcome-message">NHS</h1>
@@ -54,8 +47,7 @@ export default {
   <div>
     <h1>Welcome to Wayfinder</h1>
     <p>
-      <NuxtLink to="/show-users">View Users</NuxtLink>
-      <NuxtLink to="/add-user">Add User</NuxtLink>
+      <NuxtLink to="admin/users"> Users</NuxtLink>
     </p>
 
   </div>
@@ -66,6 +58,7 @@ export default {
     <NuxtLink to="/admin/review-media">Review Media</NuxtLink>
     <NuxtLink to="/admin/bfs-debug">BFS Debug</NuxtLink>
     <NuxtLink to="/admin/node">Add Node</NuxtLink>
+    <NuxtLink to="/admin/connections">Connections</NuxtLink>
 
   </div>
 </template>
