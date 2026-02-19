@@ -110,14 +110,24 @@ const submitAssign = async () => {
 
   assignLoading.value = true
   try {
-    await $fetch('/api/connection', {
-      method: 'POST',
-      body: {
-        node_1: Number(connection_node_1.value),
-        node_2: Number(connection_node_2.value),
-        is_wheelchair_inaccessible: !!is_wheelchair_inaccessible.value
+    // create connection (ignore if it already exists), but surface other errors
+    try {
+      await $fetch('/api/connection', {
+        method: 'POST',
+        body: {
+          node_1: Number(connection_node_1.value),
+          node_2: Number(connection_node_2.value),
+          is_wheelchair_inaccessible: !!is_wheelchair_inaccessible.value
+        }
+      })
+    } catch (e) {
+      const code = e?.data?.statusCode || e?.data?.status || null
+      if (code === 409) {
+        // connection already exists — proceed
+      } else {
+        throw e
       }
-    }).catch(() => {})
+    }
 
     await $fetch('/api/connection-media', {
       method: 'POST',

@@ -22,9 +22,7 @@ export default defineEventHandler(async () => {
         map.set(key, {
           node_1: r.node_1,
           node_2: r.node_2,
-          uses_lift: r.uses_lift,
-          uses_stairs: r.uses_stairs,
-          wheelchair_accessible: r.wheelchair_accessible,
+          is_wheelchair_inaccessible: !!r.is_wheelchair_inaccessible,
           media: []
         })
       }
