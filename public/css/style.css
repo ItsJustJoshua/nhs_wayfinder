@@ -104,6 +104,11 @@ input:focus {
     background-color: #0056b3;
 }
 
+#node-path-preview {
+    margin: 0;
+    text-align: center;
+}
+
 .background-image {
     position: relative;
     z-index: 0;
