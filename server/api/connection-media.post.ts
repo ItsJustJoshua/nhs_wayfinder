@@ -3,10 +3,14 @@ import pool from '~~/api/database'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { connection_node_1, connection_node_2, media_id, order_num = null } = body
+    const { connection_node_1, connection_node_2, media_id, order_num = null, content_desc = null } = body
 
     if (typeof connection_node_1 !== 'number' || typeof connection_node_2 !== 'number' || typeof media_id !== 'number') {
       throw createError({ statusCode: 400, statusMessage: 'connection_node_1, connection_node_2 and media_id must be numeric IDs' })
+    }
+
+    if (content_desc !== null && typeof content_desc !== 'string') {
+      throw createError({ statusCode: 400, statusMessage: 'content_desc must be a string' })
     }
 
     // Verify connection exists
@@ -25,8 +29,8 @@ export default defineEventHandler(async (event) => {
     }
 
     await pool.execute(
-      'INSERT INTO navigation_system.connection_media (connection_node_1, connection_node_2, media_id, order_num) VALUES (?, ?, ?, ?)',
-      [connection_node_1, connection_node_2, media_id, order_num]
+      'INSERT INTO navigation_system.connection_media (connection_node_1, connection_node_2, media_id, order_num, content_desc) VALUES (?, ?, ?, ?, ?)',
+      [connection_node_1, connection_node_2, media_id, order_num, content_desc]
     )
 
     return { success: true }
