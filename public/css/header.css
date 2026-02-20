@@ -13,11 +13,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
     background-color: #005EB8;
     height: 100px;
     width: auto;
     margin: 0 0;
     padding: 0 20%;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
 #Topbar img{
@@ -46,6 +54,15 @@
 
 .account a:hover {
     text-decoration: underline;
+}
+
+.topbar-actions .translate-wrapper,
+.topbar-actions .translate-status {
+    color: #fff;
+}
+
+.topbar-actions .translate-target .goog-te-combo {
+    border-color: #d9e1ec;
 }
 
 #Morebtn{
@@ -177,3 +194,4 @@ nav ul li a:hover {
     }
 
 }
+
