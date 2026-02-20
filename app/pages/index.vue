@@ -112,7 +112,7 @@ export default {
         <label>Wheelchair User</label>
       </div>
 
-      <button @click="runBFS">Find Shortest Path</button>
+      <button @click="runBFS">Find Path</button>
 
       <div v-if="shortestPath" class="result-box">
         <strong>Shortest Path:</strong>
