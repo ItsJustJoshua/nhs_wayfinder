@@ -1,6 +1,6 @@
 <script>
 import { user } from "~~/server/api/use-auth";
-import '../public/css/index.css'
+import "../public/css/index.css";
 
 // <NuxtLink to="/admin/create-routemap">Create Route Map</NuxtLink>
 // <NuxtLink to="/admin/edit-routemap">Edit Route Map</NuxtLink>
@@ -55,7 +55,7 @@ export default {
         this.graph,
         String(this.startNode),
         String(this.targetNode),
-        this.accessible
+        this.accessible,
       );
 
       this.searched = true;
@@ -65,19 +65,13 @@ export default {
         this.$router.push({ path: "/watch-route", query: { path } });
       }
     },
-      watchPath() {
-        if (!this.shortestPath || !this.shortestPath.length) return;
-        const path = this.shortestPath.join(",");
-        this.$router.push({ path: "/watch-route", query: { path } });
-      },
+    watchPath() {
+      if (!this.shortestPath || !this.shortestPath.length) return;
+      const path = this.shortestPath.join(",");
+      this.$router.push({ path: "/watch-route", query: { path } });
+    },
   },
 };
-
-
-
-
-
-
 </script>
 
 <template>
@@ -88,55 +82,70 @@ export default {
       <p class="hospital-name">Northern General Hospital</p>
     </div>
 
-
-
-    
-
     <div class="box-container-center">
-    <div style="padding: 20px">
-      <h2>Find your path:</h2>
+      <div style="padding: 20px">
+        <h2>Find your path:</h2>
 
-      <div class="form-group">
-        <label>Start location:</label>
-        <select v-model="startNode">
-          <option value="">-- Select start location --</option>
-          <option v-for="n in nodes" :key="n.node_id" :value="String(n.node_id)">{{ n.node_name }} ({{ n.node_id }})</option>
-        </select>
+        <div class="form-group">
+          <label>Start location:</label>
+          <select v-model="startNode">
+            <option value="">-- Select start location --</option>
+            <option
+              v-for="n in nodes"
+              :key="n.node_id"
+              :value="String(n.node_id)"
+            >
+              {{ n.node_name }} ({{ n.node_id }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Target destination:</label>
+          <select v-model="targetNode">
+            <option value="">-- Select target destination --</option>
+            <option
+              v-for="n in nodes"
+              :key="n.node_id"
+              :value="String(n.node_id)"
+            >
+              {{ n.node_name }} ({{ n.node_id }})
+            </option>
+          </select>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" v-model="accessible" />
+          <label>Wheelchair User</label>
+        </div>
+
+        <button @click="runBFS">Find Path</button>
+
+        <div v-if="shortestPath" class="result-box">
+          <strong>Shortest Path:</strong>
+          <span
+            role="button"
+            @click="watchPath"
+            style="
+              cursor: pointer;
+              color: var(--nuxt-link-color, blue);
+              text-decoration: underline;
+            "
+          >
+            {{ shortestPath.join(" -> ") }}
+          </span>
+        </div>
+
+        <div v-else-if="searched" class="error-text">No valid path found.</div>
       </div>
 
-      <div class="form-group">
-        <label>Target destination:</label>
-        <select v-model="targetNode">
-          <option value="">-- Select target destination --</option>
-          <option v-for="n in nodes" :key="n.node_id" :value="String(n.node_id)">{{ n.node_name }} ({{ n.node_id }})</option>
-        </select>
+      <div class="debug-selection">
+        <hr />
+        <p>
+          Pathfinding is subject to inaccuracies. If extra help is needed,
+          please ask a member of staff.
+        </p>
       </div>
-
-      <div class="checkbox-group">
-        <input type="checkbox" v-model="accessible" />
-        <label>Wheelchair User</label>
-      </div>
-
-      <button @click="runBFS">Find Path</button>
-
-      <div v-if="shortestPath" class="result-box">
-        <strong>Shortest Path:</strong>
-        <span role="button" @click="watchPath"
-          style="cursor:pointer;color:var(--nuxt-link-color,blue);text-decoration:underline">
-          {{ shortestPath.join(" -> ") }}
-        </span>
-      </div>
-
-      <div v-else-if="searched" class="error-text">No valid path found.</div>
-    </div>
-
-    <div class="debug-selection">
-      <hr />
-      <p>
-        Here is where you will be able to create some nodes for debugging
-        purposes.
-      </p>
-    </div>
     </div>
   </div>
 </template>
