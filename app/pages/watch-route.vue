@@ -106,35 +106,37 @@ const nextMedia = () => {
         <h3>Route chain:</h3>
         <span v-if="connectionChain && connectionChain.length">Connections: {{ connectionChain.length }}</span>
       </div>
-  </div>
-  <div class="box-container-center">
-      <div v-if="mediaList && mediaList.length" class="">
-        <h3>Media</h3>
-        <div>
-          <div v-if="currentMedia">
-            <h4>Connection {{ (currentMedia.__connIndex || 0) + 1 }} of {{ connectionChain.length }} — {{ nodesMap[currentMedia.__node_1] || currentMedia.__node_1 }} → {{ nodesMap[currentMedia.__node_2] || currentMedia.__node_2 }}</h4>
-            <span v-if="isImageType(currentMedia)">
-              <img :src="currentMedia.media_url" alt="media" style="max-width:220px; max-height:140px" />
-            </span>
-            <span v-else-if="isVideoType(currentMedia)">
-              <video :src="currentMedia.media_url" controls style="max-width:320px; max-height:180px"></video>
-            </span>
-            <span v-else>
-              <a :href="currentMedia.media_url" target="_blank">Open media {{ currentMedia.media_id }}</a>
-            </span>
-            <small style="margin-left:8px">(id: {{ currentMedia.media_id }}{{ currentMedia.order_num ? ', order: ' + currentMedia.order_num : '' }})</small>
-            <div v-if="currentMedia.content_desc" style="margin-top:6px"><em>{{ currentMedia.content_desc }}</em></div>
-          </div>
 
-          <div style="margin-top:8px">
-            <button @click="prevMedia" :disabled="currentIndex === 0">Previous</button>
-            <span style="margin:0 8px">{{ currentIndex + 1 }} / {{ mediaList.length }}</span>
-            <button @click="nextMedia" :disabled="currentIndex >= mediaList.length - 1">Next</button>
+      <div class="box-container-center">
+        <div v-if="mediaList && mediaList.length" class="">
+          <h3>Media</h3>
+          <div>
+            <div v-if="currentMedia">
+              <h4>Connection {{ (currentMedia.__connIndex || 0) + 1 }} of {{ connectionChain.length }} — {{ nodesMap[currentMedia.__node_1] || currentMedia.__node_1 }} → {{ nodesMap[currentMedia.__node_2] || currentMedia.__node_2 }}</h4>
+              <span v-if="isImageType(currentMedia)">
+                <img :src="currentMedia.media_url" alt="media" style="max-width:220px; max-height:140px" />
+              </span>
+              <span v-else-if="isVideoType(currentMedia)">
+                <video :src="currentMedia.media_url" controls style="max-width:320px; max-height:180px"></video>
+              </span>
+              <span v-else>
+                <a :href="currentMedia.media_url" target="_blank">Open media {{ currentMedia.media_id }}</a>
+              </span>
+              <h4 style="margin-top:12px">Details for this media:</h4>
+              <small style="margin-left:8px">(id: {{ currentMedia.media_id }}{{ currentMedia.order_num ? ', order: ' + currentMedia.order_num : '' }})</small>
+              <div v-if="currentMedia.content_desc" style="margin-top:6px"><em>{{ currentMedia.content_desc }}</em></div>
+            </div>
+
+            <div style="margin-top:8px">
+              <button @click="prevMedia" :disabled="currentIndex === 0">Previous</button>
+              <span style="margin:0 8px">{{ currentIndex + 1 }} / {{ mediaList.length }}</span>
+              <button @click="nextMedia" :disabled="currentIndex >= mediaList.length - 1">Next</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-else>
-        <p>No media assigned across this route chain.</p>
+        <div v-else>
+          <p>No media assigned across this route chain.</p>
+        </div>
       </div>
     </div>
 
