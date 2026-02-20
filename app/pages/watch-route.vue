@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onUnmounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import useMediaChecks from '../../composables/useMediaChecks'
 
 
@@ -89,23 +89,6 @@ const prevMedia = () => {
 const nextMedia = () => {
   if (currentIndex.value < mediaList.value.length - 1) currentIndex.value++
 }
-
-const speakDescription = (text) => {
-  if (typeof window === 'undefined' || !window.speechSynthesis) return
-  
-  window.speechSynthesis.cancel()
-
-  if (text) {
-    const utterance = new SpeechSynthesisUtterance(text)
-    window.speechSynthesis.speak(utterance)
-  }
-}
-
-onUnmounted(() => {
-  if (typeof window !== 'undefined' && window.speechSynthesis) {
-    window.speechSynthesis.cancel()
-  }
-})
 </script>
 
 
@@ -181,10 +164,7 @@ onUnmounted(() => {
               <a :href="currentMedia.media_url" target="_blank">Open media {{ currentMedia.media_id }}</a>
             </span>
             <small style="margin-left:8px">(id: {{ currentMedia.media_id }}{{ currentMedia.order_num ? ', order: ' + currentMedia.order_num : '' }})</small>
-            <div v-if="currentMedia.content_desc" style="margin-top:6px; display:flex; align-items:center">
-              <p style="margin:0">{{ currentMedia.content_desc }}</p>
-              <button @click="speakDescription(currentMedia.content_desc)" style="margin-left:8px; cursor:pointer" title="Read description">🔊</button>
-            </div>
+            <div v-if="currentMedia.content_desc" style="margin-top:6px"><p>{{ currentMedia.content_desc }}</p></div>
           </div>
 
           <div style="margin-top:8px">
