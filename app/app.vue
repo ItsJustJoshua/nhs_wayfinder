@@ -60,7 +60,6 @@ console.log('Current user:', user.value)
 
 <template>
   <div class="app-layout">
-    <LangSwitcher />
     <Header />
     <div class="app-main">
       <NuxtPage />
