@@ -27,11 +27,12 @@ const connection_node_1 = ref(null)
 const connection_node_2 = ref(null)
 const media_id = ref(null)
 const order_num = ref('')
+const content_desc = ref('')
 const assignMessage = ref('')
 const assignLoading = ref(false)
 
 
-const is_wheelchair_inaccessible = ref(false)
+const wheelchair_accessible = ref(false)
 
 const searchNodes = ref('')
 const searchMedia = ref('')
@@ -110,20 +111,18 @@ const submitAssign = async () => {
 
   assignLoading.value = true
   try {
-    // create connection (ignore if it already exists), but surface other errors
     try {
       await $fetch('/api/connection', {
         method: 'POST',
         body: {
           node_1: Number(connection_node_1.value),
           node_2: Number(connection_node_2.value),
-          is_wheelchair_inaccessible: !!is_wheelchair_inaccessible.value
+          wheelchair_accessible: !!wheelchair_accessible.value
         }
       })
     } catch (e) {
       const code = e?.data?.statusCode || e?.data?.status || null
       if (code === 409) {
-        // connection already exists — proceed
       } else {
         throw e
       }
@@ -135,12 +134,14 @@ const submitAssign = async () => {
         connection_node_1: Number(connection_node_1.value),
         connection_node_2: Number(connection_node_2.value),
         media_id: Number(media_id.value),
-        order_num: order_num.value ? Number(order_num.value) : null
+        order_num: order_num.value ? Number(order_num.value) : null,
+        content_desc: content_desc.value ? String(content_desc.value).trim() : null
       }
     })
 
     assignMessage.value = 'Media assigned to connection'
     order_num.value = ''
+    content_desc.value = ''
   } catch (err) {
     assignMessage.value = String(err?.data?.message || err?.message || err)
   } finally {
@@ -220,6 +221,8 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
         <div>
           <label>Search media</label>
           <input v-model="searchMedia" placeholder="filter media by type or id" />
+
+
         </div>
 
         <div>
@@ -244,23 +247,28 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
         </div>
 
         <div style="margin-top:8px">
-          <label style="display:block"><input type="checkbox" v-model="is_wheelchair_inaccessible" /> Is wheelchair inaccessible</label>
+          <label style="display:block"><input type="checkbox" v-model="wheelchair_accessible" /> Is wheelchair accessible</label>
         </div>
 
         <div>
-          <label>Order number (optional)</label>
-          <input v-model="order_num" type="number" min="0" />
-        </div>
-
-        <div>
-          <button :disabled="assignLoading || !canSubmitAssign" @click="submitAssign">{{ assignLoading ? 'Saving…' : 'Create connection & assign media' }}</button>
-          <NuxtLink to="/admin/node">Add node</NuxtLink>
+          <label>Media description (optional)</label>
+          <textarea v-model="content_desc" rows="2" placeholder="Short description for this media on the connection"></textarea>
         </div>
 
         <p v-if="assignMessage">{{ assignMessage }}</p>
+
+        <div>
+          <button :disabled="assignLoading || !canSubmitAssign" @click="submitAssign">{{ assignLoading ? 'Saving…' : 'Create connection & assign media' }}</button>
+
+        </div>
+        <NuxtLink to="/admin/node">Add node</NuxtLink>
+
+
       </div>
     </section>
   </div>
+
+
 
   <div>
     <h1>media</h1>
@@ -278,8 +286,8 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             <td v-for="col in columns" :key="col">
               <a :href="mediaItem[col]">{{ col === 'media_url' ? displayMediaUrl(mediaItem[col]) : mediaItem[col] }}</a>
             </td>
-            <img v-if="mediaItem && isImageType(mediaItem)" :src="mediaItem.media_url" alt="Media"/>
-            <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls style="max-width:200px; max-height:150px"></video>
+            <img v-if="mediaItem && isImageType(mediaItem)" :src="mediaItem.media_url" alt="Media" class="media-thumb" />
+            <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls class="media-thumb"></video>
           </tr>
         </tbody>
       </table>
@@ -310,6 +318,6 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
       </table>
       <div v-else>No media resources found.</div>
     </div>
-  </div>
+    </div>
     </div>
 </template>

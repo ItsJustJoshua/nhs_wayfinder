@@ -44,6 +44,18 @@ async function deleteConnectionMedia(connection_node_1: number, connection_node_
     }
 }
 
+async function editConnectionMediaDesc(connection_node_1: number, connection_node_2: number, media_id: number, currentDesc: string | null) {
+    const val = prompt('Edit media description (leave blank to clear):', currentDesc || '')
+    if (val === null) return
+    const newDesc = (String(val).trim() === '') ? null : String(val).trim()
+    try {
+        await $fetch('/api/connection-media', { method: 'PATCH', body: { connection_node_1, connection_node_2, media_id, content_desc: newDesc } })
+        await refresh()
+    } catch (err) {
+        alert(String(err?.message || err))
+    }
+}
+
 
 const { data: connections, pending, error, refresh } = await useFetch('/api/connection')
 const { data: nodes, pending: nodesPending, error: nodesError } = await useFetch('/api/node')
@@ -77,7 +89,7 @@ console.log('connections data:', connections.value)
                 <NuxtLink :to="{ path: '/watch-route', query: { node_1: c.node_1, node_2: c.node_2 } }">
                     <strong>{{ nodesMap[c.node_1] || c.node_1 }} → {{ nodesMap[c.node_2] || c.node_2 }}</strong>
                 </NuxtLink>
-                <span v-if="c.is_wheelchair_inaccessible"> - wheelchair inaccessible</span>
+                <span v-if="c.wheelchair_accessible"> - wheelchair accessible</span>
             </div>
             <div v-if="c.media && c.media.length">
                 <h5>Connected media</h5>
@@ -95,6 +107,8 @@ console.log('connections data:', connections.value)
                         </span>
                         <small style="margin-left:8px">(id: {{ m.media_id }}{{ m.order_num ? ', order: ' + m.order_num : '' }})</small>
                         <button :disabled="deleting" @click="deleteConnectionMedia(c.node_1, c.node_2, m.media_id)">Delete</button>
+                        <button :disabled="deleting" @click="editConnectionMediaDesc(c.node_1, c.node_2, m.media_id, m.content_desc)">Edit description</button>
+                        <div v-if="m.content_desc" style="margin-top:6px"><em>{{ m.content_desc }}</em></div>
                     </div>
                     </li>
                     </ul>
@@ -114,7 +128,7 @@ console.log('connections data:', connections.value)
                 <tr>
                     <th style="text-align:left">From</th>
                     <th style="text-align:left">To</th>
-                    <th style="text-align:left">Wheelchair inaccessible</th>
+                    <th style="text-align:left">Wheelchair accessible</th>
                     <th></th>
                 </tr>
             </thead>
@@ -122,7 +136,7 @@ console.log('connections data:', connections.value)
                 <tr v-for="c in connections" :key="c.node_1 + '-' + c.node_2">
                     <td>{{ nodeLabel(c.node_1) }} ({{ c.node_1 }})</td>
                     <td>{{ nodeLabel(c.node_2) }} ({{ c.node_2 }})</td>
-                    <td>{{ c.is_wheelchair_inaccessible ? 'Yes' : 'No' }}</td>
+                    <td>{{ c.wheelchair_accessible ? 'Yes' : 'No' }}</td>
                     <td>
                         <button :disabled="deleting" @click="deleteConnection(c.node_1, c.node_2)">Delete</button>
                     </td>

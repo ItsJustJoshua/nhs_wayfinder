@@ -20,7 +20,9 @@ export function createGraph(nodes, connections) {
     connections.forEach(connection => {
         const node1 = String(connection.node_1).trim();
         const node2 = String(connection.node_2).trim();
-        const inaccessible = Boolean(connection.is_wheelchair_inaccessible);
+        const rawWheelchair = connection.wheelchair_accessible;
+        const accessible = rawWheelchair === undefined || rawWheelchair === null ? true : Boolean(Number(rawWheelchair));
+        const inaccessible = !accessible;
 
         if (!graph[node1] || !graph[node2]) return;
 
