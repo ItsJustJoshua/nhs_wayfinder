@@ -334,7 +334,7 @@ footer ul {
 }
 
 footer ul li a {
-    text-decoration: underline;
+    text-decoration: none;
     color: #003d75;
     font-weight: bold;
 }
