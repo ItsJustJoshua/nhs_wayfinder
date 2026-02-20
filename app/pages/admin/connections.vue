@@ -77,7 +77,7 @@ console.log('connections data:', connections.value)
                 <NuxtLink :to="{ path: '/watch-route', query: { node_1: c.node_1, node_2: c.node_2 } }">
                     <strong>{{ nodesMap[c.node_1] || c.node_1 }} → {{ nodesMap[c.node_2] || c.node_2 }}</strong>
                 </NuxtLink>
-                <span v-if="c.is_wheelchair_inaccessible"> - wheelchair inaccessible</span>
+                <span v-if="c.wheelchair_accessible"> - wheelchair accessible</span>
             </div>
             <div v-if="c.media && c.media.length">
                 <h5>Connected media</h5>
@@ -114,7 +114,7 @@ console.log('connections data:', connections.value)
                 <tr>
                     <th style="text-align:left">From</th>
                     <th style="text-align:left">To</th>
-                    <th style="text-align:left">Wheelchair inaccessible</th>
+                    <th style="text-align:left">Wheelchair accessible</th>
                     <th></th>
                 </tr>
             </thead>
@@ -122,7 +122,7 @@ console.log('connections data:', connections.value)
                 <tr v-for="c in connections" :key="c.node_1 + '-' + c.node_2">
                     <td>{{ nodeLabel(c.node_1) }} ({{ c.node_1 }})</td>
                     <td>{{ nodeLabel(c.node_2) }} ({{ c.node_2 }})</td>
-                    <td>{{ c.is_wheelchair_inaccessible ? 'Yes' : 'No' }}</td>
+                    <td>{{ c.wheelchair_accessible ? 'Yes' : 'No' }}</td>
                     <td>
                         <button :disabled="deleting" @click="deleteConnection(c.node_1, c.node_2)">Delete</button>
                     </td>

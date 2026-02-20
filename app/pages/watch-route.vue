@@ -140,7 +140,7 @@ const nextMedia = () => {
       <h2>{{ nodesMap[selectedConnection.node_1] || selectedConnection.node_1 }} → {{ nodesMap[selectedConnection.node_2] || selectedConnection.node_2 }}</h2>
       <div class="location-text">
         <h3>Route details:</h3>
-        <span v-if="selectedConnection.is_wheelchair_inaccessible"> • wheelchair inaccessible</span>
+        <span v-if="selectedConnection.wheelchair_accessible"> • wheelchair accessible</span>
       </div>
 
       <div v-if="mediaList && mediaList.length" class="">

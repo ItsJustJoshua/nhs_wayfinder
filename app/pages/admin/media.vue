@@ -31,7 +31,7 @@ const assignMessage = ref('')
 const assignLoading = ref(false)
 
 
-const is_wheelchair_inaccessible = ref(false)
+const wheelchair_accessible = ref(false)
 
 const searchNodes = ref('')
 const searchMedia = ref('')
@@ -117,7 +117,7 @@ const submitAssign = async () => {
         body: {
           node_1: Number(connection_node_1.value),
           node_2: Number(connection_node_2.value),
-          is_wheelchair_inaccessible: !!is_wheelchair_inaccessible.value
+          wheelchair_accessible: !!wheelchair_accessible.value
         }
       })
     } catch (e) {
@@ -244,7 +244,7 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
         </div>
 
         <div style="margin-top:8px">
-          <label style="display:block"><input type="checkbox" v-model="is_wheelchair_inaccessible" /> Is wheelchair inaccessible</label>
+          <label style="display:block"><input type="checkbox" v-model="wheelchair_accessible" /> Is wheelchair accessible</label>
         </div>
 
         <div>

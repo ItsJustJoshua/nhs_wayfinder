@@ -94,7 +94,7 @@ const deleteConnection = async (n1, n2) => {
     <ul v-else>
       <li v-for="c in connections" :key="`${c.node_1}-${c.node_2}`">
         {{ c.node_1 }} ↔ {{ c.node_2 }}
-        <span v-if="c.is_wheelchair_inaccessible">(wheelchair inaccessible)</span>
+        <span v-if="c.wheelchair_accessible">(wheelchair accessible)</span>
         <button @click="deleteConnection(c.node_1, c.node_2)" :disabled="deleting">Delete</button>
       </li>
     </ul>

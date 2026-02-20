@@ -57,7 +57,7 @@ export default {
       connections: [],
       startNode: "",
       targetNode: "",
-      inaccessible: false,
+      accessible: false,
       shortestPath: null,
       searched: false,
     };
@@ -88,7 +88,7 @@ export default {
         this.graph,
         this.startNode.trim(),
         this.targetNode.trim(),
-        this.inaccessible,
+        this.accessible,
       );
 
       this.searched = true;
