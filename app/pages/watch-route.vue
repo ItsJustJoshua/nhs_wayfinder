@@ -166,7 +166,7 @@ const nextMedia = () => {
                   <video
                     :src="currentMedia.media_url"
                     controls
-                    style="max-width: 320px; max-height: 180px"
+                    style="width: 100%; height: 100%"
                   ></video>
                 </span>
                 <span v-else>
