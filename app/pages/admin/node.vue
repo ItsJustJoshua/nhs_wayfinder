@@ -73,7 +73,6 @@ const deleteConnection = async (n1, n2) => {
       <button :disabled="loading || !valid" @click="submit">Create Node</button>
       <NuxtLink to="/admin/media">Assign media</NuxtLink>
     </div>
-    <p v-if="message">{{ message }}</p>
   </div>
 
   <div class="box-container-center">
