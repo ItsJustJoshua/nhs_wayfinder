@@ -93,7 +93,7 @@ const nextMedia = () => {
 
 
 <template>
-
+<div class="background-image">
   <div class="box-container-center">
     <h1>Selected route</h1>
 
@@ -180,4 +180,5 @@ const nextMedia = () => {
 
     <NuxtLink to="/admin/list-routesadmin">Back to Routes List</NuxtLink>
   </div>
+</div>
 </template>
