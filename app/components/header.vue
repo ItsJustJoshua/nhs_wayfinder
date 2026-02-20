@@ -1,6 +1,7 @@
 <script setup>
 import '../public/css/header.css'
 import { ref, computed } from 'vue'
+import GoogleTranslate from './GoogleTranslate.vue'
 
 const isDropdownOpen = ref(false)
 const toggleDropdown = () => { isDropdownOpen.value = !isDropdownOpen.value }
@@ -20,24 +21,7 @@ const logout = async () => {
     window.location.href = '/'
 }
 
-async function handleLogout() {
-  try {
-    await logout();
-  } catch (_) {}
 
-
-  logoutMessage.value = user.value
-    ? `Goodbye ${user.value.username}! You have been logged out.`
-    : "Logout successful.";
-  showLogoutSuccess.value = true;
-
-  setTimeout(() => {
-    showLogoutSuccess.value = false;
-    try {
-      router.push("/");
-    } catch (_) {}
-  }, 2000);
-}
 </script>
 
 <template>
@@ -47,11 +31,14 @@ async function handleLogout() {
               <img src="/resources/nhs_logo.jpg" alt="NHS Wayfinder Logo">
                             <p class="logo-text">Northern General Hospital</p>
             </div>
-            <div class="account">
-                <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
-                <NuxtLink v-else to="#" @click.prevent="handleLogout">
-                    Logout
-                </NuxtLink>
+                        <div class="topbar-actions">
+                                <GoogleTranslate />
+                                <div class="account">
+                                        <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
+                                        <NuxtLink v-else to="#" @click.prevent="logout">
+                                                Logout
+                                        </NuxtLink>
+                                </div>
             </div>
         </div>
         <nav class="navbar">
