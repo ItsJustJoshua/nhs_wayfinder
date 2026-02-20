@@ -89,6 +89,9 @@ const prevMedia = () => {
 const nextMedia = () => {
   if (currentIndex.value < mediaList.value.length - 1) currentIndex.value++
 }
+
+const isChain = computed(() => pathNodes && pathNodes.length > 1)
+
 </script>
 
 
@@ -100,32 +103,52 @@ const nextMedia = () => {
     <p v-if="connectionsPending || nodesPending">Loading route...</p>
     <p v-if="connectionsError || nodesError">Error loading route.</p>
 
-    <div v-if="pathNodes && pathNodes.length > 1">
-      <h2>Route: {{ pathNodes.join(' → ') }}</h2>
-      <div class="location-text">
-        <h3>Route chain:</h3>
-        <span v-if="connectionChain && connectionChain.length">Connections: {{ connectionChain.length }}</span>
+    <div v-if="isChain || selectedConnection">
+      <div v-if="isChain">
+        <h2>Route: {{ pathNodes.join(' → ') }}</h2>
+        <div class="location-text">
+          <h3>Route chain:</h3>
+          <span v-if="connectionChain && connectionChain.length">Connections: {{ connectionChain.length }}</span>
+        </div>
       </div>
+      <div v-else>
+        <h2>{{ nodesMap[selectedConnection.node_1] || selectedConnection.node_1 }} → {{ nodesMap[selectedConnection.node_2] || selectedConnection.node_2 }}</h2>
+        <div class="location-text">
+          <h3>Route details:</h3>
+          <span v-if="selectedConnection.wheelchair_accessible"> • wheelchair accessible</span>
+        </div>
+      </div>
+
       <div>
-        <div v-if="mediaList && mediaList.length" class="">
+        <div v-if="mediaList && mediaList.length">
           <h3>Media</h3>
           <div>
             <div v-if="currentMedia">
-              <h4>Connection {{ (currentMedia.__connIndex || 0) + 1 }} of {{ connectionChain.length }} — {{ nodesMap[currentMedia.__node_1] || currentMedia.__node_1 }} → {{ nodesMap[currentMedia.__node_2] || currentMedia.__node_2 }}</h4>
-              <span v-if="isImageType(currentMedia)">
-                <img :src="currentMedia.media_url" alt="media" style="max-width:220px; max-height:140px" />
-              </span>
-              <span v-else-if="isVideoType(currentMedia)">
-                <video :src="currentMedia.media_url" controls style="max-width:320px; max-height:180px"></video>
-              </span>
-              <span v-else>
-                <a :href="currentMedia.media_url" target="_blank">Open media {{ currentMedia.media_id }}</a>
-              </span>
+              <!-- Route Step Header (if chain) -->
+              <h4 v-if="isChain">
+                Connection {{ (currentMedia.__connIndex || 0) + 1 }} of {{ connectionChain.length }} — {{ nodesMap[currentMedia.__node_1] || currentMedia.__node_1 }} → {{ nodesMap[currentMedia.__node_2] || currentMedia.__node_2 }}
+              </h4>
+
+              <!-- Media Player -->
+              <div class="media-display">
+                <span v-if="isImageType(currentMedia)">
+                  <img :src="currentMedia.media_url" alt="media" style="max-width:220px; max-height:140px" />
+                </span>
+                <span v-else-if="isVideoType(currentMedia)">
+                  <video :src="currentMedia.media_url" controls style="max-width:320px; max-height:180px"></video>
+                </span>
+                <span v-else>
+                  <a :href="currentMedia.media_url" target="_blank">Open media {{ currentMedia.media_id }}</a>
+                </span>
+              </div>
+
+              <!-- Media Details -->
               <h4 style="margin-top:12px">Details for this media:</h4>
               <small style="margin-left:8px">(id: {{ currentMedia.media_id }}{{ currentMedia.order_num ? ', order: ' + currentMedia.order_num : '' }})</small>
               <div v-if="currentMedia.content_desc" style="margin-top:6px"><em>{{ currentMedia.content_desc }}</em></div>
             </div>
 
+            <!-- Navigation Controls -->
             <div style="margin-top:8px">
               <button @click="prevMedia" :disabled="currentIndex === 0">Previous</button>
               <span style="margin:0 8px">{{ currentIndex + 1 }} / {{ mediaList.length }}</span>
@@ -134,44 +157,8 @@ const nextMedia = () => {
           </div>
         </div>
         <div v-else>
-          <p>No media assigned across this route chain.</p>
+          <p>No media assigned {{ isChain ? 'across this route chain' : 'to this route' }}.</p>
         </div>
-      </div>
-    </div>
-
-    <div v-else-if="selectedConnection">
-      <h2>{{ nodesMap[selectedConnection.node_1] || selectedConnection.node_1 }} → {{ nodesMap[selectedConnection.node_2] || selectedConnection.node_2 }}</h2>
-      <div class="location-text">
-        <h3>Route details:</h3>
-        <span v-if="selectedConnection.wheelchair_accessible"> • wheelchair accessible</span>
-      </div>
-
-      <div v-if="mediaList && mediaList.length" class="">
-        <h3>Media</h3>
-        <div>
-          <div v-if="currentMedia">
-            <span v-if="isImageType(currentMedia)">
-              <img :src="currentMedia.media_url" alt="media" style="max-width:220px; max-height:140px" />
-            </span>
-            <span v-else-if="isVideoType(currentMedia)">
-              <video :src="currentMedia.media_url" controls style="max-width:320px; max-height:180px"></video>
-            </span>
-            <span v-else>
-              <a :href="currentMedia.media_url" target="_blank">Open media {{ currentMedia.media_id }}</a>
-            </span>
-            <small style="margin-left:8px">(id: {{ currentMedia.media_id }}{{ currentMedia.order_num ? ', order: ' + currentMedia.order_num : '' }})</small>
-            <div v-if="currentMedia.content_desc" style="margin-top:6px"><p>{{ currentMedia.content_desc }}</p></div>
-          </div>
-
-          <div style="margin-top:8px">
-            <button @click="prevMedia" :disabled="currentIndex === 0">Previous</button>
-            <span style="margin:0 8px">{{ currentIndex + 1 }} / {{ mediaList.length }}</span>
-            <button @click="nextMedia" :disabled="currentIndex >= mediaList.length - 1">Next</button>
-          </div>
-        </div>
-      </div>
-      <div v-else>
-        <p>No media assigned to this route.</p>
       </div>
     </div>
 
