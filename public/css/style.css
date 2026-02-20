@@ -282,10 +282,9 @@ input:focus {
 
 
 .container {
-    background-color: #005EB8;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;     /* vertical */
 }
 
 .welcome-message {

@@ -93,7 +93,7 @@ const nextMedia = () => {
 
 
 <template>
-<div class="background-image">
+<div class="container">
   <div class="box-container-center">
     <h1>Selected route</h1>
 
