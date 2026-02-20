@@ -37,8 +37,6 @@ const loginUser = async () => {
 </script>
 
 <template>
-
-
   <main>
     <h1>Log in to your NHS Wayfinder account</h1>
     <form @submit.prevent="loginUser()">
@@ -55,7 +53,7 @@ const loginUser = async () => {
 
       <button type="submit">Login</button>
     </form>
-    <div v-if="message">{{ message }}</div>
+    <div class="message" v-if="message">{{ message }}</div>
   </main>
 
 
