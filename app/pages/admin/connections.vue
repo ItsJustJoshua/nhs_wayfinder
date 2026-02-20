@@ -83,6 +83,7 @@ console.log('connections data:', connections.value)
         <h1>Connections</h1>
         <p v-if="pending">Loading connections...</p>
         <p v-if="error">Error: {{ error }}</p>
+        
             <ul v-if="connections">
             <li v-for="c in connections" :key="`${c.node_1}-${c.node_2}`">
             <div>
