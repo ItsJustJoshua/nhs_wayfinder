@@ -140,14 +140,11 @@ onUnmounted(() => {
               </span>
               <h4 style="margin-top:12px">Details for this media:</h4>
               <small style="margin-left:8px">(id: {{ currentMedia.media_id }}{{ currentMedia.order_num ? ', order: ' + currentMedia.order_num : '' }})</small>
-<<<<<<< HEAD
               <div v-if="currentMedia.content_desc" style="margin-top:6px"><p>{{ currentMedia.content_desc }}</p></div>
-=======
               <div v-if="currentMedia.content_desc" style="margin-top:6px">
                 <em>{{ currentMedia.content_desc }}</em>
                 <button @click="speakDescription(currentMedia.content_desc)" style="margin-left:8px; cursor:pointer" title="Read description">🔊</button>
               </div>
->>>>>>> 32a569e467965e4f504f5a3aef37288cafc2c4ec
             </div>
 
             <div style="margin-top:8px">
