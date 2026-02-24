@@ -1,15 +1,10 @@
 <script>
-
-import { ref, computed } from 'vue'
-
+import { ref, computed } from "vue";
 </script>
 
-
-
-
 <template>
-<footer >
-    <ul> 
+  <footer>
+    <ul>
       <li><a href="..">Services</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
