@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
 	try {
 		const [rows]: any = await pool.query(
-			'SELECT * FROM navigation_system.connection_media WHERE connection_node_1 = ? AND connection_node_2 = ? AND media_id = ? LIMIT 1',
+			' SELECT * FROM connection_media WHERE connection_node_1 = ? AND connection_node_2 = ? AND media_id = ? LIMIT 1',
 			[connection_node_1, connection_node_2, media_id]
 		)
 		if (!rows || rows.length === 0) {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 		}
 
 		const [result]: any = await pool.query(
-			'DELETE FROM navigation_system.connection_media WHERE connection_node_1 = ? AND connection_node_2 = ? AND media_id = ? LIMIT 1',
+			'DELETE FROM connection_media WHERE connection_node_1 = ? AND connection_node_2 = ? AND media_id = ? LIMIT 1',
 			[connection_node_1, connection_node_2, media_id]
 		)
 

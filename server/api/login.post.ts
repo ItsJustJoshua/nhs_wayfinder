@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const [rows]: any = await pool.query('SELECT * FROM navigation_system.users WHERE username = ?', [username])
+    const [rows]: any = await pool.query('SELECT * FROM users WHERE username = ?', [username])
     const row = rows?.[0]
 
     if (!row) {

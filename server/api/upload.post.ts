@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
 
     // Insert media record into database
     await pool.query(
-      'INSERT INTO navigation_system.media_resource (media_type, media_url) VALUES (?, ?)',
+      'INSERT INTO media_resource (media_type, media_url) VALUES (?, ?)',
       [media_type, media_url]
     )
 

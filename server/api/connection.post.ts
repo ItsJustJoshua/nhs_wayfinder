@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     }
 
     await pool.execute(
-      'INSERT INTO navigation_system.connections (node_1, node_2, wheelchair_accessible) VALUES (?, ?, ?)',
+      'INSERT INTO connections (node_1, node_2, wheelchair_accessible) VALUES (?, ?, ?)',
       [node_1, node_2, wheelchair_accessible ? 1 : 0]
     )
 

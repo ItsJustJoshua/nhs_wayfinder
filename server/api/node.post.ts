@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!node_name) throw createError({ statusCode: 400, statusMessage: 'node_name is required' })
 
     const [result]: any = await pool.execute(
-      'INSERT INTO navigation_system.node (node_name) VALUES (?)',
+      'INSERT INTO node (node_name) VALUES (?)',
       [node_name]
     )
 

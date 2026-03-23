@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT 1 FROM navigation_system.node WHERE node_id = ? LIMIT 1',
+      'SELECT 1 FROM node WHERE node_id = ? LIMIT 1',
       [node_id]
     )
 
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const [result] = await pool.query(
-      'DELETE FROM navigation_system.node WHERE node_id = ? LIMIT 1',
+      'DELETE FROM node WHERE node_id = ? LIMIT 1',
       [node_id]
     )
 

@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT 1 FROM navigation_system.connections WHERE node_1 = ? AND node_2 = ? LIMIT 1',
+      'SELECT 1 FROM connections WHERE node_1 = ? AND node_2 = ? LIMIT 1',
       [node_1, node_2]
     )
 
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const [result] = await pool.query(
-      'DELETE FROM navigation_system.connections WHERE node_1 = ? AND node_2 = ? LIMIT 1',
+      'DELETE FROM connections WHERE node_1 = ? AND node_2 = ? LIMIT 1',
       [node_1, node_2]
     )
 

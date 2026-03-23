@@ -3,7 +3,7 @@ import pool from '../../api/database'
 export default defineEventHandler(async () => {
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM navigation_system.users'
+      'SELECT * FROM users'
     )
     return rows
   } catch (err: any) {

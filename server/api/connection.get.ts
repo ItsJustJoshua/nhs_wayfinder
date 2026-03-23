@@ -7,10 +7,10 @@ export default defineEventHandler(async () => {
     const [rows] = await pool.query(
             `SELECT c.node_1, c.node_2, c.wheelchair_accessible,
               cm.media_id, mr.media_type, mr.media_url, cm.order_num, cm.content_desc
-       FROM navigation_system.connections c
-       LEFT JOIN navigation_system.connection_media cm
+       FROM connections c
+       LEFT JOIN connection_media cm
          ON cm.connection_node_1 = c.node_1 AND cm.connection_node_2 = c.node_2
-       LEFT JOIN navigation_system.media_resource mr
+       LEFT JOIN media_resource mr
          ON mr.media_id = cm.media_id
        ORDER BY c.node_1, c.node_2, cm.order_num ASC`
     )
