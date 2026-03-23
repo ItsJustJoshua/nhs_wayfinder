@@ -1,10 +1,9 @@
-import { createError } from 'h3'
 import pool from '~~/api/database'
 
 export default defineEventHandler(async () => {
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM media_resource'
+      'SELECT * FROM users'
     )
     return rows
   } catch (err: any) {
