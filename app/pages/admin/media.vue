@@ -7,7 +7,7 @@ async function deleteMedia(media_url) {
   if (!confirm('Delete this media resource?')) return
   try {
     await $fetch('/api/media', { method: 'DELETE', body: { media_url } })
-    await refresh()
+    if (typeof refreshMedia === 'function') await refreshMedia()
   } catch (err) {
     console.error(err)
     alert('Failed to delete media resource')

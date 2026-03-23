@@ -1,3 +1,4 @@
+import { createError } from 'h3'
 import pool from '~~/api/database'
 
 export default defineEventHandler(async () => {
