@@ -36,6 +36,21 @@ main h2 {
     margin-bottom: 5px;
 }
 
+.box-container-center .form-group {
+    width: 100%;
+    max-width: 420px;
+}
+
+.box-container-center .form-group select {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    font-size: 17px;
+    border: 1px solid #464646;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
 .form-group input[type="text"] {
     padding: 10px;
     font-size: 18px;
@@ -145,5 +160,10 @@ hr {
         width: min(78vw, 230px);
         font-size: 16px;
         padding: 10px 14px;
+    }
+
+    .box-container-center .form-group select {
+        min-height: 44px;
+        font-size: 16px;
     }
 }
