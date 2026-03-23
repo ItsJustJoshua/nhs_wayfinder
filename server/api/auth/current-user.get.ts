@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
     // push to database
 
-    const [rows]: any = await pool.query('SELECT * FROM navigation_system.users WHERE username = ?', [uid])
+    const [rows]: any = await pool.query('SELECT * FROM users WHERE username = ?', [uid])
     const row = rows?.[0]
     
 
@@ -35,8 +35,3 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: String(err?.message || err) })
   }
 })
-
-
-// USAGE: 
-// const { user } = await $fetch('/api/current-user')
-// user will be null if not authenticated, or an object with user data if authenticated.

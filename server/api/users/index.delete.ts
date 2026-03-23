@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM navigation_system.users WHERE username = ?',
+      'SELECT * FROM users WHERE username = ?',
       [username]
     )
 
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const [result] = await pool.query(
-      'DELETE FROM navigation_system.users WHERE username = ?',
+      'DELETE FROM users WHERE username = ?',
       [username]
     )
 

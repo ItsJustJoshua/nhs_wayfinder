@@ -1,5 +1,5 @@
-import pool from '../../api/database';
-import bcrypt from 'bcrypt';
+import pool from '~~/api/database'
+import bcrypt from 'bcrypt'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) || {}
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
     // Insert into the same table used by the GET handler
     const columnName = password_hash ? 'password_hash' : 'password'
-    const sql = `INSERT INTO navigation_system.users (username, password_hash) VALUES (?, ?)`
+    const sql = `INSERT INTO users (username, password_hash) VALUES (?, ?)`
     const [result]: any = await pool.execute(sql, [username, hashedPassword])
 
     return { id: result.insertId ?? result.insert_id ?? null, username }

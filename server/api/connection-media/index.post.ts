@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
     // Verify connection exists
     const [rows]: any = await pool.query(
-      'SELECT 1 FROM navigation_system.connections WHERE node_1 = ? AND node_2 = ? LIMIT 1',
+      'SELECT 1 FROM connections WHERE node_1 = ? AND node_2 = ? LIMIT 1',
       [connection_node_1, connection_node_2]
     )
     if (!rows || rows.length === 0) {
@@ -23,13 +23,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // verify media exists
-    const [mrows]: any = await pool.query('SELECT 1 FROM navigation_system.media_resource WHERE media_id = ? LIMIT 1', [media_id])
+    const [mrows]: any = await pool.query('SELECT 1 FROM media_resource WHERE media_id = ? LIMIT 1', [media_id])
     if (!mrows || mrows.length === 0) {
       throw createError({ statusCode: 404, statusMessage: 'Media not found' })
     }
 
     await pool.execute(
-      'INSERT INTO navigation_system.connection_media (connection_node_1, connection_node_2, media_id, order_num, content_desc) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO connection_media (connection_node_1, connection_node_2, media_id, order_num, content_desc) VALUES (?, ?, ?, ?, ?)',
       [connection_node_1, connection_node_2, media_id, order_num, content_desc]
     )
 

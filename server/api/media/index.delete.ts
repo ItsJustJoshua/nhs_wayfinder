@@ -1,3 +1,4 @@
+import { readBody, createError } from 'h3'
 import pool from '~~/api/database'
 
 export default defineEventHandler(async (event) => {
@@ -10,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM navigation_system.media_resource WHERE media_url = ?',
+      'SELECT * FROM media_resource WHERE media_url = ?',
       [media_url]
     )
 
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
     // delete the record
     const [result] = await pool.query(
-      'DELETE FROM navigation_system.media_resource WHERE media_url = ?',
+      'DELETE FROM media_resource WHERE media_url = ?',
       [media_url]
     )
 
