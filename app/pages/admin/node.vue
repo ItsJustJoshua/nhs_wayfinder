@@ -1,11 +1,38 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
+import usePagination from '../../../composables/usePagination'
+import useNodeLabels from '../../../composables/useNodeLabels'
+import useConfirmAction from '../../../composables/useConfirmAction'
+
+const { confirmAndRun } = useConfirmAction()
 
 const node_name = ref('')
 const message = ref('')
 const loading = ref(false)
 const deleting = ref(false)
 const updatingAccessibility = ref(false)
+const PAGE_SIZE = 50
+const nodesTotal = ref(0)
+const connectionsTotal = ref(0)
+const {
+  page: nodesPage,
+  offset: nodesOffset,
+  totalPages: nodesTotalPages,
+  hasPrev: nodesHasPrev,
+  hasNext: nodesHasNext,
+  nextPage: nextNodesPage,
+  prevPage: prevNodesPage,
+} = usePagination(nodesTotal, PAGE_SIZE)
+
+const {
+  page: connectionsPage,
+  offset: connectionsOffset,
+  totalPages: connectionsTotalPages,
+  hasPrev: connectionsHasPrev,
+  hasNext: connectionsHasNext,
+  nextPage: nextConnectionsPage,
+  prevPage: prevConnectionsPage,
+} = usePagination(connectionsTotal, PAGE_SIZE)
 
 const trimmed = computed(() => String(node_name.value || '').trim())
 const valid = computed(() => trimmed.value.length > 0 && trimmed.value.length <= 100)
@@ -26,46 +53,57 @@ const submit = async () => {
   } finally { loading.value = false }
 }
 
-const { data: locations, pending: pendingNodes, error: errorNodes, refresh: refreshNodes } = await useFetch('/api/node')
-const { data: connections, pending: pendingConnections, error: errorConnections, refresh: refreshConnections } = await useFetch('/api/connection')
-
-const nodeNameMap = computed(() => {
-  const map = {}
-  const list = locations?.value || []
-  for (const node of list) {
-    map[node.node_id] = node.node_name
-  }
-  return map
+const { data: nodesResponse, pending: pendingNodes, error: errorNodes, refresh: refreshNodes } = await useFetch('/api/node', {
+  query: computed(() => ({
+    limit: PAGE_SIZE,
+    offset: nodesOffset.value
+  }))
 })
 
-const nodeLabel = (nodeId) => {
-  return nodeNameMap.value[nodeId] || 'Unknown node'
-}
+const { data: connectionsResponse, pending: pendingConnections, error: errorConnections, refresh: refreshConnections } = await useFetch('/api/connection', {
+  query: computed(() => ({
+    limit: PAGE_SIZE,
+    offset: connectionsOffset.value
+  }))
+})
+
+const locations = computed(() => (nodesResponse.value && nodesResponse.value.items) ? nodesResponse.value.items : [])
+const connections = computed(() => (connectionsResponse.value && connectionsResponse.value.items) ? connectionsResponse.value.items : [])
+const nodesShowingCount = computed(() => locations.value.length)
+const connectionsShowingCount = computed(() => connections.value.length)
+watchEffect(() => {
+  nodesTotal.value = Number((nodesResponse.value && nodesResponse.value.total) || 0)
+  connectionsTotal.value = Number((connectionsResponse.value && connectionsResponse.value.total) || 0)
+})
+
+const { nodeLabel } = useNodeLabels(locations)
 
 const deleteNode = async (node_id) => {
-  if (!confirm(`Delete node ${node_id}? This cannot be undone.`)) return
-  deleting.value = true
-  try {
-    await $fetch('/api/node', { method: 'DELETE', body: { node_id } })
-    message.value = `Deleted node ${node_id}`
-    await refreshNodes()
-    await refreshConnections()
-  } catch (err) {
-    message.value = String(err?.data?.message || err?.message || err)
-  } finally { deleting.value = false }
+  await confirmAndRun(`Delete node ${node_id}? This cannot be undone.`, async () => {
+    deleting.value = true
+    try {
+      await $fetch('/api/node', { method: 'DELETE', body: { node_id } })
+      message.value = `Deleted node ${node_id}`
+      await refreshNodes()
+      await refreshConnections()
+    } catch (err) {
+      message.value = String(err?.data?.message || err?.message || err)
+    } finally { deleting.value = false }
+  })
 }
 
 const deleteConnection = async (n1, n2) => {
-  if (!confirm(`Delete connection ${n1} ↔ ${n2}?`)) return
-  deleting.value = true
-  try {
-    await $fetch('/api/connection', { method: 'DELETE', body: { node_1: n1, node_2: n2 } })
-    message.value = `Deleted connection ${n1}-${n2}`
-    await refreshConnections()
-    await refreshNodes()
-  } catch (err) {
-    message.value = String(err?.data?.message || err?.message || err)
-  } finally { deleting.value = false }
+  await confirmAndRun(`Delete connection ${n1} ↔ ${n2}?`, async () => {
+    deleting.value = true
+    try {
+      await $fetch('/api/connection', { method: 'DELETE', body: { node_1: n1, node_2: n2 } })
+      message.value = `Deleted connection ${n1}-${n2}`
+      await refreshConnections()
+      await refreshNodes()
+    } catch (err) {
+      message.value = String(err?.data?.message || err?.message || err)
+    } finally { deleting.value = false }
+  })
 }
 
 const updateConnectionAccessibility = async (n1, n2, nextValue) => {
@@ -108,7 +146,15 @@ const updateConnectionAccessibility = async (n1, n2, nextValue) => {
     <h2>Existing Nodes</h2>
     <div v-if="errorNodes">Error loading nodes.</div>
     <div v-else-if="pendingNodes">Loading…</div>
-    <table v-else class="styled-table">
+    <div v-else>
+      <div>
+        <span>Showing {{ nodesShowingCount }} / {{ nodesTotal }} nodes</span>
+        <button :disabled="!nodesHasPrev || pendingNodes" @click="prevNodesPage">Previous page</button>
+        <button :disabled="!nodesHasNext || pendingNodes" @click="nextNodesPage">Next page</button>
+        <button :disabled="pendingNodes" @click="refreshNodes">Refresh</button>
+        <span>Page {{ nodesPage }} / {{ nodesTotalPages }}</span>
+      </div>
+    <table class="styled-table">
       <thead>
         <tr>
           <th>Node name</th>
@@ -122,13 +168,22 @@ const updateConnectionAccessibility = async (n1, n2, nextValue) => {
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 
   <div>
     <h2>Connections</h2>
     <div v-if="errorConnections">Error loading connections.</div>
     <div v-else-if="pendingConnections">Loading…</div>
-    <table v-else class="styled-table">
+    <div v-else>
+      <div>
+        <span>Showing {{ connectionsShowingCount }} / {{ connectionsTotal }} connections</span>
+        <button :disabled="!connectionsHasPrev || pendingConnections" @click="prevConnectionsPage">Previous page</button>
+        <button :disabled="!connectionsHasNext || pendingConnections" @click="nextConnectionsPage">Next page</button>
+        <button :disabled="pendingConnections" @click="refreshConnections">Refresh</button>
+        <span>Page {{ connectionsPage }} / {{ connectionsTotalPages }}</span>
+      </div>
+    <table class="styled-table">
       <thead>
         <tr>
           <th>From</th>
@@ -156,6 +211,7 @@ const updateConnectionAccessibility = async (n1, n2, nextValue) => {
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 
 </template>

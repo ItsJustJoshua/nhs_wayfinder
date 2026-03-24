@@ -1,17 +1,23 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watchEffect } from 'vue'
 import useMediaChecks from '../../../composables/useMediaChecks'
+import useGlobalMediaPreview from '../../../composables/useGlobalMediaPreview'
+import usePagination from '../../../composables/usePagination'
+import useConfirmAction from '../../../composables/useConfirmAction'
+
+const { confirmAndRun } = useConfirmAction()
 
 
 async function deleteMedia(media_url) {
-  if (!confirm('Delete this media resource?')) return
-  try {
-    await $fetch('/api/media', { method: 'DELETE', body: { media_url } })
-    if (typeof refreshMedia === 'function') await refreshMedia()
-  } catch (err) {
-    console.error(err)
-    alert('Failed to delete media resource')
-  }
+  await confirmAndRun('Delete this media resource?', async () => {
+    try {
+      await $fetch('/api/media', { method: 'DELETE', body: { media_url } })
+      if (typeof refreshMedia === 'function') await refreshMedia()
+    } catch (err) {
+      console.error(err)
+      alert('Failed to delete media resource')
+    }
+  })
 }
 
 async function renameMedia(mediaId) {
@@ -32,9 +38,30 @@ const useFile = ref(false)
 const fileInput = ref(null)
 const uploadMessage = ref('')
 const uploadLoading = ref(false)
+const MEDIA_PAGE_SIZE = 50
+const mediaTotal = ref(0)
+const {
+  page: mediaPage,
+  offset: mediaOffset,
+  totalPages: mediaTotalPages,
+  hasPrev: mediaHasPrev,
+  hasNext: mediaHasNext,
+  nextPage: nextMediaPage,
+  prevPage: prevMediaPage
+} = usePagination(mediaTotal, MEDIA_PAGE_SIZE)
 
 const { data: nodes, pending: nodesPending, error: nodesError } = await useFetch('/api/node')
-const { data: media, pending: mediaPending, error: mediaError, refresh: refreshMedia } = await useFetch('/api/media')
+const { data: mediaResponse, pending: mediaPending, error: mediaError, refresh: refreshMedia } = await useFetch('/api/media', {
+  query: computed(() => ({
+    limit: MEDIA_PAGE_SIZE,
+    offset: mediaOffset.value
+  }))
+})
+const media = computed(() => (mediaResponse.value && mediaResponse.value.items) ? mediaResponse.value.items : [])
+const mediaShowingCount = computed(() => media.value.length)
+watchEffect(() => {
+  mediaTotal.value = Number((mediaResponse.value && mediaResponse.value.total) || 0)
+})
 
 const connection_node_1 = ref(null)
 const connection_node_2 = ref(null)
@@ -63,7 +90,7 @@ const filteredMedia = computed(() => {
 })
 
 const selectedMediaObj = computed(() => {
-  const list = (media && media.value) || []
+  const list = media.value || []
   return list.find((m) => m.media_id === Number(media_id.value))
 })
 
@@ -162,9 +189,9 @@ const submitAssign = async () => {
   }
 }
 
-const { data: media1, pending, error } = await useFetch('/api/media')
-const columns = computed(() => (media?.value?.length ? Object.keys(media.value[0]) : []))
+const columns = computed(() => (media.value?.length ? Object.keys(media.value[0]) : []))
 
+const { openGlobalMediaPreview } = useGlobalMediaPreview()
 const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
 </script>
 
@@ -286,9 +313,16 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
 
   <div>
     <h1>media</h1>
-    <div v-if="error">Error loading media.</div>
-    <div v-else-if="pending">Loading...</div>
+    <div v-if="mediaError">Error loading media.</div>
+    <div v-else-if="mediaPending">Loading...</div>
     <div v-else>
+      <div>
+        <span>Showing {{ mediaShowingCount }} / {{ mediaTotal }} media</span>
+        <button :disabled="!mediaHasPrev || mediaPending" @click="prevMediaPage">Previous page</button>
+        <button :disabled="!mediaHasNext || mediaPending" @click="nextMediaPage">Next page</button>
+        <button :disabled="mediaPending" @click="refreshMedia">Refresh</button>
+        <span>Page {{ mediaPage }} / {{ mediaTotalPages }}</span>
+      </div>
       <table v-if="media && media.length" class="styled-table">
         <thead>
           <tr>
@@ -299,13 +333,19 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
           <tr v-for="(mediaItem, idx) in media" :key="idx">
             <td v-for="col in columns" :key="col">
               <template v-if="col === 'media_url'">
-                <a :href="mediaItem[col]">{{ mediaItem.media_name || displayMediaUrl(mediaItem[col]) }}</a>
+                <a :href="String(mediaItem[col] || '')" target="_self">{{ mediaItem[col] }}</a>
               </template>
               <template v-else>
                 {{ mediaItem[col] }}
               </template>
             </td>
-            <img v-if="mediaItem && isImageType(mediaItem)" :src="mediaItem.media_url" alt="Media" class="media-thumb" />
+            <img
+              v-if="mediaItem && isImageType(mediaItem)"
+              :src="mediaItem.media_url"
+              alt="Media"
+              class="media-thumb media-thumb-hover"
+              @click="openGlobalMediaPreview(mediaItem.media_url)"
+            />
             <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls class="media-thumb"></video>
             <td>
               <button @click="renameMedia(mediaItem.media_id)">Rename</button>
