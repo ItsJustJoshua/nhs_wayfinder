@@ -180,12 +180,12 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
           <label>
             <input type="radio" v-model="useFile" :value="false" /> Use link
           </label>
-          <label style="margin-left: 12px">
+          <label>
             <input type="radio" v-model="useFile" :value="true" /> Upload file
           </label>
         </div>
 
-        <div style="margin-top:8px">
+        <div>
           <div v-if="!useFile">
             <label for="media">Media link (URL):</label>
             <input id="media" name="media" type="url" v-model="uploadForm.media" required />
@@ -194,19 +194,19 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
           <div v-else>
             <label for="file">Choose file:</label>
             <input id="file" ref="fileInput" type="file" accept="image/*,video/*" />
-            <div style="margin-top:8px">
+            <div>
               <label for="file_name">Save as (optional):</label>
               <input id="file_name" name="file_name" type="text" v-model="uploadForm.file_name" placeholder="custom-name.mp4 or leave blank" />
             </div>
           </div>
         </div>
 
-        <button type="submit" :disabled="uploadLoading" style="margin-top:12px">{{ uploadLoading ? 'Uploading…' : 'Upload' }}</button>
+        <button type="submit" :disabled="uploadLoading">{{ uploadLoading ? 'Uploading…' : 'Upload' }}</button>
       </form>
       <div v-if="uploadMessage">{{ uploadMessage }}</div>
     </section>
 
-    <section style="margin-top: 24px">
+    <section>
       <h2>Assign media to connection</h2>
       <div v-if="nodesPending || mediaPending">Loading nodes and media…</div>
       <div v-else-if="nodesError || mediaError">Unable to load nodes/media.</div>
@@ -250,18 +250,18 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
         <div v-if="selectedMediaObj">
           <h4>Preview</h4>
           <div v-if="isImageType(selectedMediaObj)">
-            <img :src="selectedMediaObj.media_url" alt="preview" style="max-width:300px; max-height:200px" />
+            <img :src="selectedMediaObj.media_url" alt="preview" />
           </div>
           <div v-else-if="isVideoType(selectedMediaObj)">
-            <video :src="selectedMediaObj.media_url" controls style="max-width:300px; max-height:200px"></video>
+            <video :src="selectedMediaObj.media_url" controls></video>
           </div>
           <div v-else>
             <a :href="selectedMediaObj.media_url" target="_blank">Open media</a>
           </div>
         </div>
 
-        <div style="margin-top:8px">
-          <label style="display:block"><input type="checkbox" v-model="wheelchair_accessible" /> Is wheelchair accessible</label>
+        <div>
+          <label><input type="checkbox" v-model="wheelchair_accessible" /> Is wheelchair accessible</label>
         </div>
 
         <div>
@@ -308,7 +308,7 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             <img v-if="mediaItem && isImageType(mediaItem)" :src="mediaItem.media_url" alt="Media" class="media-thumb" />
             <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls class="media-thumb"></video>
             <td>
-              <button @click="renameMedia(mediaItem.media_id)" style="margin-right:8px">Rename</button>
+              <button @click="renameMedia(mediaItem.media_id)">Rename</button>
               <button @click="deleteMedia(mediaItem.media_url)">Delete</button>
             </td>
           </tr>
