@@ -186,7 +186,7 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             </label>
           </div>
 
-          <div style="margin-top:8px">
+          <div>
             <div v-if="!useFile">
               <label for="media">Media link (URL):</label>
               <input id="media" name="media" type="url" v-model="uploadForm.media" required />
@@ -212,12 +212,12 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
         <div v-if="nodesPending || mediaPending">Loading nodes and media…</div>
         <div v-else-if="nodesError || mediaError">Unable to load nodes/media.</div>
         <div v-else>
-          <div>
+          <div class="form-group">
             <label>Search nodes</label>
             <input v-model="searchNodes" placeholder="filter nodes by name or id" />
           </div>
 
-          <div>
+          <div class="form-group">
             <label>From node</label>
             <select v-model="connection_node_1">
               <option :value="null">-- select --</option>
@@ -225,7 +225,7 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             </select>
           </div>
 
-          <div>
+          <div class="form-group">
             <label>To node</label>
             <select v-model="connection_node_2">
               <option :value="null">-- select --</option>
@@ -233,14 +233,14 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             </select>
           </div>
 
-          <div>
+          <div class="form-group">
             <label>Search media</label>
             <input v-model="searchMedia" placeholder="filter media by type or id" />
 
 
           </div>
 
-          <div>
+          <div class="form-group">
             <label>Media</label>
             <select v-model="media_id">
               <option :value="null">-- select --</option>
@@ -270,7 +270,7 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             <label style="display:block"><input type="checkbox" v-model="wheelchair_accessible" /> Is wheelchair accessible</label>
           </div>
 
-          <div>
+          <div class="form-group">
             <label>Media description (optional)</label>
             <textarea v-model="content_desc" rows="2" placeholder="Short description for this media on the connection"></textarea>
           </div>
@@ -281,7 +281,6 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
             <button :disabled="assignLoading || !canSubmitAssign" @click="submitAssign">{{ assignLoading ? 'Saving…' : 'Create connection & assign media' }}</button>
 
           </div>
-          <NuxtLink to="/admin/node">Add node</NuxtLink>
 
 
         </div>
@@ -322,9 +321,9 @@ const { displayMediaUrl, isImageType, isVideoType } = useMediaChecks()
                 <video v-else-if="mediaItem && isVideoType(mediaItem)" :src="mediaItem.media_url" controls class="media-thumb"></video>
                 <span v-else>—</span>
               </td>
-              <td>
-                <button @click="renameMedia(mediaItem.media_id)" style="margin-right:8px">Rename</button>
-                <button @click="deleteMedia(mediaItem.media_url)">Delete</button>
+              <td class="media-actions-cell">
+                <button class="media-table-btn" @click="renameMedia(mediaItem.media_id)">Rename</button>
+                <button class="media-table-btn" @click="deleteMedia(mediaItem.media_url)">Delete</button>
               </td>
             </tr>
           </tbody>
