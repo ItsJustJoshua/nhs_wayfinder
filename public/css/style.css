@@ -44,6 +44,21 @@
     cursor: pointer;
 }
 
+.media-table-btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    background-color: #00662f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;
+    min-width: 70px;
+}
+
+.media-table-btn:hover {
+    background-color: #004620;
+}
 
 .form-container {
     max-width: 400px;

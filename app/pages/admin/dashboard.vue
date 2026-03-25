@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import useAuth from '../../../server/api/use-auth'
 import "../public/css/dashboard.css"
+import "../public/css/style.css"
 
 const { user, fetchUserData, logout, error } = useAuth()
 
