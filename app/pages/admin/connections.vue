@@ -233,6 +233,9 @@ const connectionsShowingCount = computed(() => filteredConnections.value.length)
                         n.name || n.node_id }}</option>
                 </select>
             </label>
+        </div>
+        
+        <div class="form-group">
             <label>To:
                 <select v-model="filterTo">
                     <option value="">All</option>
@@ -240,8 +243,11 @@ const connectionsShowingCount = computed(() => filteredConnections.value.length)
                         n.node_name || n.name || n.node_id }}</option>
                 </select>
             </label>
-            <label><input type="checkbox" v-model="filterAccessible" /> Wheelchair only</label>
-            <label><input type="checkbox" v-model="filterHideAll" /> Hide all connections</label>
+        </div>
+
+        <div class="checkbox-group">
+            <label>Wheelchair only<input type="checkbox" v-model="filterAccessible" /></label>
+            <label>Hide all connections<input type="checkbox" v-model="filterHideAll" /></label>
             <button
                 @click="filterFrom = ''; filterTo = ''; filterAccessible = false; filterHideAll = false">Reset</button>
             <span>Showing {{ connectionsShowingCount }} / {{ connectionsTotal }} connections</span>
@@ -250,7 +256,6 @@ const connectionsShowingCount = computed(() => filteredConnections.value.length)
             <button :disabled="pending" @click="refreshConnectionsPage">Refresh</button>
             <span>Page {{ connectionsPage }} / {{ connectionsTotalPages }}</span>
         </div>
-
 
         <div class="table-container">
             <div v-if="pending">Loading connections…</div>

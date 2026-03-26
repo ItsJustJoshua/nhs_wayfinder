@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch, onUnmounted } from "vue";
 import useMediaChecks from "../../composables/useMediaChecks";
+import QrExport from "../components/QrExport.vue";
 
 const route = useRoute();
 const node1 = route.query.node_1 ? Number(route.query.node_1) : null;
@@ -38,6 +39,9 @@ const nodesMap = computed(() => {
 });
 
 const { isImageType, isVideoType } = useMediaChecks();
+
+// current page URL for QR export (client-side only)
+const pageUrl = computed(() => (typeof window === "undefined" ? "" : window.location.href));
 
 const selectedConnection = computed(() => {
   const list = (connections && connections.value) || [];
@@ -174,6 +178,9 @@ onUnmounted(() => {
   <div class="route-page-container">
     <div>
       <h1>Selected route</h1>
+      <div style="margin-top:8px">
+        <QrExport :text="pageUrl" />
+      </div>
 
       <p v-if="connectionsPending || nodesPending">Loading route...</p>
       <p v-if="connectionsError || nodesError">Error loading route.</p>
