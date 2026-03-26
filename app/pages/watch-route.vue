@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch, onUnmounted } from "vue";
 import useMediaChecks from "../../composables/useMediaChecks";
+import QrExport from "../components/QrExport.vue";
 
 const route = useRoute();
 const node1 = route.query.node_1 ? Number(route.query.node_1) : null;
@@ -38,6 +39,9 @@ const nodesMap = computed(() => {
 });
 
 const { isImageType, isVideoType } = useMediaChecks();
+
+// current page URL for QR export (client-side only)
+const pageUrl = computed(() => (typeof window === "undefined" ? "" : window.location.href));
 
 const selectedConnection = computed(() => {
   const list = (connections && connections.value) || [];
@@ -128,15 +132,39 @@ const nextMedia = () => {
   if (currentIndex.value < mediaList.value.length - 1) currentIndex.value++;
 };
 
+const instructionTextEl = ref(null);
+
+const getPreferredSpeechLang = () => {
+  if (typeof document === "undefined") return "en-GB";
+
+  const translateSelect = document.querySelector(".goog-te-combo");
+  if (translateSelect && translateSelect.value) return String(translateSelect.value);
+
+  if (document.documentElement && document.documentElement.lang) {
+    return document.documentElement.lang;
+  }
+
+  return "en-GB";
+};
+
 const speakDescription = (text) => {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
 
   window.speechSynthesis.cancel();
 
-  if (text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(utterance);
-  }
+  const domText = instructionTextEl.value
+    ? instructionTextEl.value.innerText || instructionTextEl.value.textContent
+    : "";
+
+  const spokenText =
+    (typeof text === "string" && text.trim()) ||
+    (typeof domText === "string" ? domText.trim() : "");
+
+  if (!spokenText) return;
+
+  const utterance = new SpeechSynthesisUtterance(spokenText);
+  utterance.lang = getPreferredSpeechLang();
+  window.speechSynthesis.speak(utterance);
 };
 
 onUnmounted(() => {
@@ -147,9 +175,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="route-page-container">
     <div>
       <h1>Selected route</h1>
+      <div style="margin-top:8px">
+        <QrExport :text="pageUrl" />
+      </div>
 
       <p v-if="connectionsPending || nodesPending">Loading route...</p>
       <p v-if="connectionsError || nodesError">Error loading route.</p>
@@ -163,12 +194,13 @@ onUnmounted(() => {
         <div>
           <div v-if="mediaList && mediaList.length" class="">
             <div>
-              <div v-if="currentMedia">
+              <div v-if="currentMedia" class="route-media-box">
                 <h2>Step {{ currentIndex + 1 }} of {{ mediaList.length }}</h2>
                 <span v-if="isImageType(currentMedia)">
                   <img
                     :src="currentMedia.media_url"
                     alt="media"
+                    class="route-media-image"
                   />
                 </span>
                 <span v-else-if="isVideoType(currentMedia)">
@@ -183,30 +215,32 @@ onUnmounted(() => {
                   >
                 </span>
                 <h4>Instructions:</h4>
-                <div v-if="currentMedia.content_desc">
-                  <em>{{ currentMedia.content_desc }}</em>
+                <div v-if="currentMedia.content_desc" class="instruction-block">
+                  <em ref="instructionTextEl" class="instruction-text">{{ currentMedia.content_desc }}</em>
                   <button
-                    @click="speakDescription(currentMedia.content_desc)"
+                    class="tts-button"  
+                    @click="speakDescription()"
                     title="Read description"
                   >
-                    🔊
+                    🔊 Read out the direction
                   </button>
                 </div>
               </div>
 
-              <div>
-                <button v-if="currentIndex > 0" @click="prevMedia">
+              <div class="media-nav-controls">
+                <button v-if="currentIndex > 0" @click="prevMedia" class="route-nav-button">
                   Previous
                 </button>
 
                 <button
+                  class="route-nav-button"
                   @click="nextMedia"
                   :disabled="currentIndex >= mediaList.length - 1"
                 >
                   Next
                 </button>
               </div>
-              <span
+              <span class="media-step-counter"
                 >({{ currentIndex + 1 }} / {{ mediaList.length }})</span
               >
             </div>
@@ -233,12 +267,13 @@ onUnmounted(() => {
         <div v-if="mediaList && mediaList.length" class="">
           <h3>Media</h3>
           <div>
-            <div v-if="currentMedia">
+            <div v-if="currentMedia" class="route-media-box">
               <h4>Step {{ currentIndex + 1 }} of {{ mediaList.length }}</h4>
               <span v-if="isImageType(currentMedia)">
                 <img
                   :src="currentMedia.media_url"
                   alt="media"
+                  class="route-media-image"
                 />
               </span>
               <span v-else-if="isVideoType(currentMedia)">
@@ -260,31 +295,31 @@ onUnmounted(() => {
                     : ""
                 }})</small
               >
-              <div
-                v-if="currentMedia.content_desc"
-              >
-                <p>{{ currentMedia.content_desc }}</p>
+              <div v-if="currentMedia.content_desc" class="instruction-block">
+                <p ref="instructionTextEl" class="instruction-text">{{ currentMedia.content_desc }}</p>
                 <button
-                  @click="speakDescription(currentMedia.content_desc)"
+                  class="tts-button"
+                  @click="speakDescription()"
                   title="Read description"
                 >
-                  🔊
+                  🔊 Read out the direction
                 </button>
               </div>
             </div>
 
-            <div>
-              <button v-if="currentIndex > 0" @click="prevMedia">
+            <div class="media-nav-controls">
+              <button v-if="currentIndex > 0" @click="prevMedia" class="route-nav-button">
                 Previous
               </button>
-              <span>{{ currentIndex + 1 }} / {{ mediaList.length }}</span>
               <button
+                class="route-nav-button"
                 @click="nextMedia"
                 :disabled="currentIndex >= mediaList.length - 1"
               >
                 Next
               </button>
             </div>
+            <span class="media-step-counter">{{ currentIndex + 1 }} / {{ mediaList.length }}</span>
           </div>
         </div>
         <div v-else>

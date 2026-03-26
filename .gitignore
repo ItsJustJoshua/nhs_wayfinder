@@ -24,5 +24,6 @@ logs
 !.env.example
 
 # media uploads folder
-public/media
+public/media/*
+!public/media/.gitkeep
 
