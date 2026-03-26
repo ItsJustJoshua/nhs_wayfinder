@@ -7,6 +7,7 @@ const username = ref("");
 const password = ref("");
 const message = ref("");
 const isError = ref(false);
+const showPassword = ref(false);
 
 const { fetchUserData } = useAuth();
 
@@ -24,7 +25,8 @@ const loginUser = async () => {
     });
 
     if (!res.ok) {
-      message.value = "Login failed: Incorrect username or password, please try again";
+      message.value =
+        "Login failed: Incorrect username or password, please try again";
       isError.value = true;
       password.value = "";
       return;
@@ -37,7 +39,8 @@ const loginUser = async () => {
     isError.value = false;
     router.push("/admin/dashboard");
   } catch (err) {
-    message.value = "Login failed: Incorrect username or password, please try again";
+    message.value =
+      "Login failed: Incorrect username or password, please try again";
     isError.value = true;
     password.value = "";
   }
@@ -63,16 +66,22 @@ const loginUser = async () => {
         <label for="password">Password:</label>
         <input
           v-model="password"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           id="password"
           name="password"
           required
         />
       </div>
+      <div>
+        <input v-model="showPassword" type="checkbox" id="show-password" />
+        <label for="show-password">Show password</label>
+      </div>
 
       <button type="submit" id="textbox-enter">Login</button>
     </form>
-    <div class="message" :class="{ 'login-error': isError }" v-if="message">{{ message }}</div>
+    <div class="message" :class="{ 'login-error': isError }" v-if="message">
+      {{ message }}
+    </div>
   </main>
 </template>
 
