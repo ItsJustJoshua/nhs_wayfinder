@@ -303,7 +303,7 @@ input:focus {
   margin: 0;
 }
 
-.checkbox-group {
+.IndexCheckbox-group {
   width: 100%;
   max-width: 420px;
   display: flex;
@@ -313,7 +313,7 @@ input:focus {
   gap: 8px;
 }
 
-.checkbox-group label {
+.IndexCheckbox-group label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -794,17 +794,16 @@ main h2 {
 }
 
 .checkbox-group {
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  width: 300px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
 .checkbox-group label {
-  color: #ffffff;
+  color: #000000;
   font-size: 20px;
   margin-bottom: 0;
   cursor: pointer;

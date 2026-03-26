@@ -112,7 +112,7 @@ export default {
           </select>
         </div>
 
-        <div class="checkbox-group">
+        <div class="IndexCheckbox-group">
           <input type="checkbox" v-model="accessible" />
           <label>Wheelchair User</label>
         </div>
