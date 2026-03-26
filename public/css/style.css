@@ -1,15 +1,12 @@
 main {
     display: flex;
     flex-direction: column;
-    align-items: stretch; /* Changed to stretch so the table spans the full width */
+    align-items: flex-start;
     justify-content: flex-start;
     min-height: 50vh;
-    width: 95%;          /* Uses most of the screen width */
-    max-width: 1400px;   /* Stops it from getting comically wide on huge monitors */
-    margin: 50px auto;   /* The 'auto' perfectly centers it horizontally */
+    margin: 50px 20%;
     padding: 0;
 }
-
 
 
 .admin-links a {
@@ -66,7 +63,7 @@ main {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: auto;
+    width: 50px;
     height: 34px;
     min-width: 70px;
     min-height:20px;
@@ -110,6 +107,15 @@ main {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
+}
+
+.form-group select {
+    padding: 5px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #3b3b3b;
 }
 
 label {
