@@ -61,12 +61,6 @@ const logout = async () => {
         <li><NuxtLink to="/">Home</NuxtLink></li>
         <li id="hidelink"><NuxtLink to="/about">About</NuxtLink></li>
         <li id="hidelink"><NuxtLink to="/contact">Contact</NuxtLink></li>
-        <li v-if="user" id="hidelink">
-          <NuxtLink to="/admin/bfs-debug">BFS Debug</NuxtLink>
-        </li>
-        <li v-if="user" id="hidelink">
-          <NuxtLink to="/admin/media">Media</NuxtLink>
-        </li>
         <li v-if="user">
           <NuxtLink to="/admin/dashboard">Dashboard</NuxtLink>
         </li>
