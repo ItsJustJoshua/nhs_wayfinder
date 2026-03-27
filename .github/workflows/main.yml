@@ -1,0 +1,45 @@
+name: Sync Fork
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Save workflow files
+        run: |
+          mkdir -p /tmp/workflows
+          cp -r .github/workflows/. /tmp/workflows/
+          echo "Saved workflows:"
+          ls /tmp/workflows/
+
+      - name: Sync upstream
+        run: |
+          git remote add upstream https://github.com/Connor4020/NHS-Wayfinder.git
+          git fetch upstream
+          git reset --hard upstream/main
+
+      - name: Restore and commit workflow files
+        run: |
+          mkdir -p .github/workflows
+          cp -r /tmp/workflows/. .github/workflows/
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add -f .github/workflows/
+          echo "Restored workflows:"
+          ls .github/workflows/
+          git status
+          git commit -m "Restore workflows after upstream sync" || echo "No changes to commit"
+
+      - name: Push
+        run: git push --force
