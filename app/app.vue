@@ -11,7 +11,7 @@ export default {
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue'
-import useAuth from '../server/api/use-auth'
+import useAuth from '~~/composables/useAuth'
 
 
 const { user, fetchUserData, logout, error } = useAuth()

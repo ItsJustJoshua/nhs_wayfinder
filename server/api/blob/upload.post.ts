@@ -23,9 +23,42 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: `Files with extension .${ext || '(none)'} are not allowed` })
     }
 
-    const token = process.env.BLOB_READ_WRITE_TOKEN 
+    const token = process.env.BLOB_READ_WRITE_TOKEN
+
+    // If no blob token is provided (local dev), fallback to saving into public/media
     if (!token) {
-      throw createError({ statusCode: 500, statusMessage: 'Blob read/write token not configured on server (set BLOB_READ_WRITE_TOKEN).' })
+      // ensure we have a Buffer to write
+      let buf: Buffer
+      if (Buffer.isBuffer(bodyToSend)) {
+        buf = bodyToSend as Buffer
+      } else {
+        // bodyToSend might be a stream (req) or other; read into buffer
+        const chunks: Buffer[] = []
+        for await (const chunk of bodyToSend as any) {
+          chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+        }
+        buf = Buffer.concat(chunks)
+      }
+
+      // ensure public/media exists
+      const fs = await import('fs')
+      const fspath = await import('path')
+      const mediaDir = fspath.join(process.cwd(), 'public', 'media')
+      try { fs.mkdirSync(mediaDir, { recursive: true }) } catch (_) {}
+
+      // generate safe filename and avoid collisions
+      let outName = filename
+      let outPath = fspath.join(mediaDir, outName)
+      if (fs.existsSync(outPath)) {
+        const parsed = fspath.parse(outName)
+        outName = `${parsed.name}-${Date.now()}${parsed.ext}`
+        outPath = fspath.join(mediaDir, outName)
+      }
+
+      fs.writeFileSync(outPath, buf)
+
+      const publicUrl = `/media/${outName}`
+      return { url: publicUrl, publicURL: publicUrl }
     }
 
     // Enforce size limits: prefer Content-Length header, otherwise stream and buffer up to MAX_BYTES

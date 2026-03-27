@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import GoogleTranslate from "./GoogleTranslate.vue";
-import useAuth from "../../server/api/use-auth";
+import useAuth from "~~/composables/useAuth";
 
 const isDropdownOpen = ref(false);
 const headerRoot = ref(null);
