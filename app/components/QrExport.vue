@@ -4,7 +4,7 @@
     <div class="qr-actions">
       <button @click="generate">Generate QR Code</button>
       <!-- <button @click="download" :disabled="!dataUrl">Download PNG</button> -->
-        <button @click="exportPdf" :disabled="!dataUrl">Export PDF</button>
+        <button @click="download" :disabled="!dataUrl">Download PNG</button>
       </div>
     <div class="qr-preview">
       <img v-if="dataUrl" :src="dataUrl" :alt="`QR code for ${textPreview}`" />
@@ -48,38 +48,7 @@ const download = () => {
   a.remove();
 };
 
-const exportPdf = async () => {
-  if (!dataUrl.value) return;
-  try {
-    const { jsPDF } = await import("jspdf");
-    const img = new Image();
-    img.src = dataUrl.value;
-    await new Promise((res, rej) => {
-      img.onload = res;
-      img.onerror = rej;
-    });
-
-    const pdf = new jsPDF({ unit: "mm", format: "a4" });
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 15;
-
-    const iw = img.naturalWidth;
-    const ih = img.naturalHeight;
-    const maxWidth = pageWidth - margin * 2;
-    const scale = Math.min(1, maxWidth / iw);
-    const drawWidth = iw * scale;
-    const drawHeight = ih * scale;
-
-    const x = (pageWidth - drawWidth) / 2;
-    const y = margin;
-
-    pdf.addImage(dataUrl.value, "PNG", x, y, drawWidth, drawHeight);
-    pdf.save("page-qr.pdf");
-  } catch (e) {
-    // console.error(e);
-  }
-};
+// Export to PDF removed due to missing jspdf dependency. Use PNG download instead.
 </script>
 
 <style scoped>

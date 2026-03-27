@@ -1,5 +1,5 @@
 <script>
-import { user } from "../../server/api/use-auth";
+import { user } from "~~/composables/useAuth";
 
 // <NuxtLink to="/admin/create-routemap">Create Route Map</NuxtLink>
 // <NuxtLink to="/admin/edit-routemap">Edit Route Map</NuxtLink>

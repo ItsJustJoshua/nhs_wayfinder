@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import useAuth from "../../server/api/use-auth";
+import useAuth from "~~/composables/useAuth";
 
 const router = useRouter();
 const username = ref("");
