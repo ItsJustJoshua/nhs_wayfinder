@@ -89,12 +89,23 @@ const submitUpload = async () => {
 
     if (useFile.value && fileInput.value && fileInput.value.files && fileInput.value.files[0]) {
       const file = fileInput.value.files[0]
-      mediaUrl = await readFileAsDataURL(file)
       if (file.type && file.type.startsWith('video')) mediaType = '1'
       else mediaType = '2'
 
       // include user-provided filename if present, otherwise original filename
       const sendName = (uploadForm.file_name && String(uploadForm.file_name).trim()) ? String(uploadForm.file_name).trim() : file.name
+
+      // Upload file to blob storage endpoint. Server will return a JSON blob result with `url`.
+      const resp = await fetch(`/api/blob/upload?filename=${encodeURIComponent(sendName)}`, {
+        method: 'POST',
+        body: file,
+      })
+      if (!resp.ok) throw new Error('Blob upload failed')
+      const blob = await resp.json()
+      mediaUrl = blob?.url || blob?.publicURL || blob?.public_url
+      if (!mediaUrl) throw new Error('Blob upload did not return a usable URL')
+
+      // Now create the media DB record referencing the blob URL
       await $fetch('/api/media/upload', { method: 'POST', body: { media_type: mediaType, media_url: mediaUrl, file_name: sendName } })
       uploadMessage.value = 'Media uploaded successfully.'
       Object.keys(uploadForm).forEach((k) => { uploadForm[k] = '' })
